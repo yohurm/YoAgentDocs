@@ -24,7 +24,7 @@ related: [playbook.online-deep-research]
 | backend | API 与领域 | | — |
 | data | 管道与分析 | | — |
 | devops | CI 与交付 | | — |
-| client-runtime | 桌面 / IDE / CLI / 应用壳 | [横向](by-stack/client-runtime/_synthesis.md) | [VS Code when 子句](by-stack/client-runtime/microsoft--vscode.md)、[AS Logcat 工具窗](by-stack/client-runtime/JetBrains--android.md)、[Logdy UI 暂停键](by-stack/client-runtime/logdyhq--logdy-ui.md)、[Dozzle 壳/面板分层](by-stack/client-runtime/amir20--dozzle.md) |
+| client-runtime | 桌面 / IDE / CLI / 应用壳 | [横向](by-stack/client-runtime/_synthesis.md) | [VS Code when 子句](by-stack/client-runtime/microsoft--vscode.md)、[AS Logcat 工具窗](by-stack/client-runtime/JetBrains--android.md)、[Logdy UI 暂停键](by-stack/client-runtime/logdyhq--logdy-ui.md)、[Dozzle 壳/面板分层](by-stack/client-runtime/amir20--dozzle.md)、[ADB-Explorer 虚拟文件拖拽](by-stack/client-runtime/Alex4SSB--ADB-Explorer.md)、[scrcpy 拖入 push](by-stack/client-runtime/Genymobile--scrcpy.md)、[wry WebView2 拖入](by-stack/client-runtime/tauri-apps--wry.md)、[drag-rs 拖出骨架](by-stack/client-runtime/crabnebula-dev--drag-rs.md) |
 | security | 认证、密钥、供应链（仅当这是主贡献） | | — |
 | other | 暂放；满 3 篇同类再考虑升格 | | — |
 
