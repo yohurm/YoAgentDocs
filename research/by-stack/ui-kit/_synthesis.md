@@ -26,6 +26,9 @@ stack:
 | [iOS 连续圆角](apple--continuous-corners.md) | G2 continuous；concentric = parent − padding | adapt：CIRCULAR 默认，CONTINUOUS opt-in |
 | [phamfoo/figma-squircle](phamfoo--figma-squircle.md) | 每角两 cubic + 一弧；邻角分账 | adapt 公式，不进 npm |
 | [racra smooth-corner](racra--smooth-corner-rect-android-compose.md) | s=0 走 RRect；胶囊回退 circular | reuse-pattern：曲线是策略不是 token |
+| [ag-grid 表头](ag-grid--ag-grid.md) | 轨道 / 标题 wrapper / resize 三节点 | reuse-pattern：分割线不进排序钮 |
+| [Spectrum Table](adobe--react-spectrum.md) | resizer::after 画列界；排序图标未激活不占位 | reuse-pattern：文本区裁剪 |
+| [VS Code monaco-table](microsoft--vscode-table.md) | SplitView sash = 区域，th = 文案 | reuse-pattern：区域 ≠ 文本 |
 
 ## 共同架构经验
 
@@ -53,6 +56,15 @@ stack:
 - 胶囊（半径 ≥ 短边一半）即使请求 CONTINUOUS 也回退 CIRCULAR。
 - 叠层 AA 黑边：同色或同心缩小，不加粗 stroke。
 
+### 表头轨道与文本（2026-08-20 增补）
+
+- **列轨道**拥有宽度、分割线、拖拽条。**标题文本**（含排序图标）是轨道里的内容区，可以 hug 文案。禁止用铺满轨道的排序按钮去冒充列宽。
+- 分割线是铬（Spectrum `columnResizer::after`、VS Code sash、AG Grid `ag-header-cell-resize` 旁的列界）。overflow 只裁内容区，不裁轨道，否则负偏移拖拽条被剪掉。
+- 排序图标未激活不占位（Spectrum `display:none` 直到 `is-sorted`；Fluent `sortIcon` 仅 `sortDirection` 有值才渲染）。
+- Fluent TableHeaderCell 的 button `width:100%` **不要抄**：它的 hover 是单元格矩形底，Yohu 排序走圆角 `.yohu-interactive`，铺满会把高亮片当成列区域，吃掉下一条分割线。
+- 鸿蒙 List：`header` 是 CustomBuilder（内容），`divider` 是 List 属性（铬，含 startMargin/endMargin）。同一条「内容 / 分割」分权。
+- 不把 YoDataGrid 整表提前落地；先补 `YoColHeader` 轨道原语，模块只提供排序文案。
+
 ## 分歧与取舍
 
 - GE 结构体默认（64 / 2.0 / 30/30）≠ ArkUI overlay LUT（47.8 / 8.7 / thickness×0.8/0.2）。产品对齐后者。
@@ -65,6 +77,7 @@ stack:
 
 - ui-kit 修改规则可补：HIGH/MID 液态玻璃禁止闭合 hairline；白底边缘用 occlusion+SDF 衰减，不用加粗 stroke。
 - 实现配方引用本层主题笔记，而不是再从 GitHub README 推断。
+- content-region 可补一句：表头轨道是铬，标题/排序是内容区；`.yohu-interactive` 不得铺满轨道来假装列界。
 
 已升格（2026-08-20，用户确认）：圆角几何进 L1；L5 门面要薄、禁止 `api/` import `internal`；组件禁止私自 `addRoundRect` / `GradientDrawable.setCornerRadius`；玻璃 / SDF 锁定 CIRCULAR。见 `instructions/rules/by-type/ui-kit/` 的 public-api / layering / file-srp / coupling。
 
@@ -73,3 +86,5 @@ stack:
 必读仓已浅克隆到 `%TEMP%/YoAgentResearch/`。霜玻璃 HIGH 着色器仍闭源；**点光源**在 `graphic_graphic_2d` 开源，已单列。HDS / UIDesignKit 无公开实现仓。
 
 圆角：规范读本地鸿蒙《圆角参数》+ Apple `CALayerCornerCurve`；实现读 Rosen RoundRect 与 figma-squircle。`stoyan-vuchev/squircle-shape` 单 cubic 落选。
+
+表头（2026-08-20）：入选 AG Grid / Spectrum Table / VS Code monaco-table；Fluent TableHeaderCell 只作对照（单元格底 hover ≠ 圆角片）。落选 Carbon DataTable、Fluent Blazor DataGrid（与 Spectrum / Fluent React 结构重复）。

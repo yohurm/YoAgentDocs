@@ -21,7 +21,7 @@ related: [role.implementer, playbook.implement]
 - [../../rules/common/design-sources.md](../../rules/common/design-sources.md)
 - [../../rules/common/quality.md](../../rules/common/quality.md)
 
-叠加能力类型包与平台类型包（如 `ui-kit` + `android`）。改已有代码时再读 [../../rules/modification/common.md](../../rules/modification/common.md)。
+叠加能力类型包与平台类型包（如 `ui-kit` + `android`）。改已有代码时再读 [../../rules/modification/common.md](../../rules/modification/common.md)。目标是 Yo 组件或组件库时再 **MANDATORY READ** [../../../playbooks/yo-component.md](../../../playbooks/yo-component.md)。
 
 ## 目标
 

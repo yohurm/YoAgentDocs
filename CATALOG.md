@@ -19,7 +19,7 @@ Agent **自己匹配并执行**。用户不必粘贴短提示。
 | [联网深研](instructions/prompts/tasks/online-deep-research.md) | 搜索/深研开源、GitHub、GitCode、clone 到 Temp、沉浸光感/某效果「先调研」、不知道怎么实现要先看别人 | 该任务 |
 | [架构设计](instructions/prompts/tasks/architecture-design.md) | 新模块、自底向上设计、怎么分层、要不要新模块、先出方案再写代码、Plan | 该任务 |
 | [架构审查](instructions/prompts/tasks/architecture-review.md) | 审查架构/质量、硬编码、补丁层、越级、MVVM、数据链路、高内聚 | 该任务 |
-| [实现功能](instructions/prompts/tasks/implement.md) | 开发某组件/功能、对齐官方设计、全量实现、按规范做出来 | 该任务 |
+| [实现功能](instructions/prompts/tasks/implement.md) | 开发某组件/功能、对齐官方设计、全量实现、按规范做出来、组件分层 | 该任务 |
 | [修复缺陷](instructions/prompts/tasks/bug-fix.md) | 闪退、对不齐、动画不对、Logcat、截图不对、联调失败、修 bug | 该任务 |
 
 ## 串联（顺序强制）
@@ -41,7 +41,8 @@ Agent **自己匹配并执行**。用户不必粘贴短提示。
 | 先调研开关实现，GitHub 拉下来看 | 联网深研 |
 | 给 YoDialog 做分层方案，先别写代码 | 架构设计 |
 | 审查 List 有没有补丁和越级 | 架构审查 |
-| 对齐鸿蒙做底部导航，做完整 | 实现功能（缺资料则先深研） |
+| 对齐鸿蒙做底部导航，做完整 | 实现功能（缺资料则先深研；组件则走 Yo 组件手册） |
+| 组件不要堆在一个文件里，分层解耦 | 架构审查 + ui-kit 规范 |
 | 多选闪退，看 Logcat | 修复缺陷 |
 | 自底向上审查再全量开发 | 架构审查或设计 → 实现 |
 

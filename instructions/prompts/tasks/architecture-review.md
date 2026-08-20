@@ -5,7 +5,7 @@ status: active
 when: modify
 description: 审查已有代码的分层与质量。用户说审查架构、硬编码、补丁、越级、MVVM、数据链路、高内聚低耦合时使用。
 when_to_use: 架构审查、硬编码、补丁层、越级、MVVM、数据链路
-triggers: [架构审查, 硬编码, 补丁, 越级, MVVM, 数据链路, 高内聚]
+triggers: [架构审查, 硬编码, 补丁, 越级, MVVM, 数据链路, 高内聚, 耦合, 单一职责, 堆在一个文件]
 inputs: [审查范围：模块或用户路径]
 outputs: [链路说明, 问题清单, 若修复则含通路证据]
 related: [role.architect, playbook.architecture-review]
@@ -20,7 +20,7 @@ related: [role.architect, playbook.architecture-review]
 - [../../rules/common/architecture.md](../../rules/common/architecture.md)
 - [../../checklists/architecture-review.md](../../checklists/architecture-review.md)
 
-改代码时再读 [../../rules/modification/common.md](../../rules/modification/common.md)。需要重画边界则转 [architecture-design.md](architecture-design.md)。
+改代码时再读 [../../rules/modification/common.md](../../rules/modification/common.md)。需要重画边界则转 [architecture-design.md](architecture-design.md)。审查 Yo 组件时再读 [../../rules/by-type/ui-kit/README.md](../../rules/by-type/ui-kit/README.md)。
 
 ## 目标
 

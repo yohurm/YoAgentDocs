@@ -20,7 +20,7 @@ related: [role.architect, playbook.architecture-design]
 - [../../rules/common/architecture.md](../../rules/common/architecture.md)
 - [../../rules/common/design-sources.md](../../rules/common/design-sources.md)
 
-再按工作区叠加能力/平台类型包。
+再按工作区叠加能力/平台类型包。设计 Yo 组件时再读 [../../rules/by-type/ui-kit/README.md](../../rules/by-type/ui-kit/README.md)。
 
 ## 目标
 
