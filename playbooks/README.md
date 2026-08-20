@@ -15,6 +15,7 @@ when_to_use: 查找多步流程时
 | [architecture-design.md](architecture-design.md) | 架构设计 |
 | [architecture-review.md](architecture-review.md) | 架构审查 |
 | [implement.md](implement.md) | 实现功能 |
+| [yo-component.md](yo-component.md) | 新增/重做 Yo 组件 |
 | [bug-fix.md](bug-fix.md) | 修复缺陷 |
 | [start-new-work.md](start-new-work.md) | 实现功能的补充开工步骤 |
 | [modify-existing.md](modify-existing.md) | 修改已有代码的补充步骤 |

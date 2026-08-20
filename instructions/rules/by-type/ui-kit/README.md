@@ -2,31 +2,42 @@
 id: rules.type.ui-kit
 type: rule
 status: active
-severity: should
+severity: must
 scope: type
 when: always
-when_to_use: 自研组件库（Yo* 或仓库内同等组件层）
-related: [rules.type.frontend, rules.type.android]
+when_to_use: 自研组件库（YoUI、@yohu/ui 及同等 Yo* 组件层）
+related: [rules.type.ui-kit.layering, rules.type.ui-kit.file-srp, rules.type.ui-kit.coupling]
 ---
 
 # 组件库类型包
 
-页面业务不放这里。对外是可复用组件，对内是分层（样式 token、交互、动效、具体控件）。
+来源：YoUI、YoADBTools（`@yohu/ui`）会话与落地结构的共性，不是某一仓库的文件清单。
+
+页面业务、模块编排不放组件库。库只提供：token、可复用交互能力、按层拆开的控件、薄的对外 API。
+
+## Agent 必读
+
+做或改 Yo 组件时 **MANDATORY READ**：
+
+- [layering.md](layering.md) 每个组件的层
+- [file-srp.md](file-srp.md) 文件单一职责
+- [coupling.md](coupling.md) 禁止耦合
+- [content-region.md](content-region.md) 内容区与裁剪
+- [public-api.md](public-api.md) 对外 API
 
 ## 默认边界
 
-- 公开组件名称跟随仓库约定（本团队常用 `Yo` 前缀）。参考系统或开源实现时，内化进本库 API，不要在对外接口上残留「某系统示例 / 某仓库拷贝」的命名。
-- 颜色、字号、圆角、时长、关键间距进 token 或常量池；按压、涟漪、内容裁剪等交互抽成可复用能力，避免每个控件各写一套。
-- 稳定对外契约放在 API 层；实验与过渡适配不进对外目录。
-- 设计基准由任务指定（常见为 HarmonyOS 与 iOS 官方文档）。先读规范再扩 API，避免先堆接口再补状态。
-- 组件库不承载页面级 ViewModel；可组合状态留在宿主应用的 MVVM 层。库内只放控件、token 与可复用交互。
+- 公开组件名 `Yo` 前缀；样式命名空间可与组件名不同（如 `yohu-*`），但必须全库一致。
+- 参考鸿蒙 / iOS / 开源时内化成本库 API，不在对外名字里留「某系统拷贝」。
+- 组件库不承载页面级 ViewModel。
+- 宿主与模块**只用**库组件与 token；缺能力就在库里自底向上补，禁止在模块里再做一套外观。
 
 ## 质量门禁
 
-- 每个改动的组件：默认 / 按压 / 禁用 / 关键空态尽量有示例或可运行页面。
-- 平台验证走叠加的平台包：Android 有真机则实机看动画与布局；桌面则启动壳工程。
-- 对照官方示例时，核对的是视觉与交互状态，不是「函数能编译」。
+- 每个改动的组件覆盖默认 / 按压 / 禁用 / 关键空态（示例页或宿主）。
+- 平台验证走叠加的平台包。
+- 对照官方时核对视觉与交互状态，不是「能编译」。
 
 ## 不要默认引入
 
-- 第二套 UI 框架、平行的第二套主题、仅为迁就旧 Demo 而保留的双轨组件。
+- 第二套 UI 框架、第二套主题、双轨组件、模块内私有 token 数字。
