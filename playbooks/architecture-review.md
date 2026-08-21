@@ -9,7 +9,7 @@ related: [rule.common.architecture, checklist.architecture-review]
 
 # 手册：架构审查
 
-1. 读仓库已声明的分层（README、架构文档、目录约定）。未声明则先问，不要发明第二套。
+1. 读仓库已声明的分层（README、架构文档、目录约定）和对应类型包的层名（[stack-layering.md](../instructions/rules/common/stack-layering.md)）。未声明则先问，不要发明第二套，也不要把 Android MVVM 套到桌面 IPC 栈上。
 2. 沿一条真实用户路径画出数据链路：入口、状态持有者、变换、副作用终点。
 3. 对照 [architecture.md](../instructions/rules/common/architecture.md)：内聚、硬编码、**严禁兼容层**、越级、**文件单一职责**、**API 不含实现**。
 4. 打开范围内每个公开门面（`api/`、`YoXxx`、包入口、IPC 命令层）：只应看到类型与转发。出现算法、绘制、手势或 `import …internal` 记为越界。

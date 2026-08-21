@@ -6,7 +6,7 @@ severity: must
 scope: common
 when: always
 when_to_use: 架构审查、模块重设计、兼容层、补丁层，或用户要求从分层上保证质量时
-related: [rule.common.development, rule.modification.common, checklist.architecture-review, rules.type.ui-kit.file-srp, rules.type.ui-kit.public-api]
+related: [rule.common.development, rule.modification.common, rule.common.stack-layering, checklist.architecture-review, rules.type.ui-kit.file-srp, rules.type.ui-kit.public-api]
 ---
 
 # 架构与代码质量
@@ -68,8 +68,8 @@ related: [rule.common.development, rule.modification.common, checklist.architect
 
 组件库细则见 [ui-kit/file-srp.md](../by-type/ui-kit/file-srp.md) 与 [ui-kit/public-api.md](../by-type/ui-kit/public-api.md)。
 
-## 遵守已声明的分层（含 MVVM）
+## 遵守已声明的分层
 
-- 每个仓库只认一套已声明架构（文档或目录约定）。调用不得越级：例如 UI 直访数据源、页面绕过 ViewModel、壳层直写领域内部。
-- **UI 工程若采用 MVVM：** View 只负责展示与把事件交给 ViewModel；状态与业务决策在 ViewModel；数据获取与持久化在 Model / Repository。View 不直接碰数据源，ViewModel 不操作具体 View 控件。
-- 非 MVVM 的工程（如 UI → IPC → Domain）同样禁止跳层；套用本条的「不越级」，不要强行改成 MVVM。
+- 每个仓库只认一套已声明架构（文档或目录约定）。调用不得越级。
+- **层名跟类型包走**，见 [stack-layering.md](stack-layering.md)。Android 有界面的应用模块才使用 View / ViewModel / Model；Windows 桌面（WebView + 本地后端）使用 View → store 投影 → 类型化 IPC → commands → domain；组件库使用 L0–L5。禁止用其中一套去改写另一套。
+- 越级的共性：展示层直达数据源或领域内部；门面夹带实现；本该在实现层的填充/判定/校验/编排出现在 UI。具体禁例写在各类型包。

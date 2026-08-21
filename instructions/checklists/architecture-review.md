@@ -16,4 +16,4 @@ related: [rule.common.architecture]
 - [ ] 范围内无兼容性代码/兼容层；若曾存在，已沿全部相关数据链路查明根因并重设计通路，无双轨残留
 - [ ] 已写出设计前的数据链路（入口 → 状态 → 副作用）
 - [ ] 已写出实现后的数据通路证据（代码位置或运行结果）
-- [ ] 无越级调用；若项目是 MVVM，View / ViewModel / Model 未互相侵入
+- [ ] 无越级调用；描述用该仓库类型包的层名（Android 页面才检查 View / ViewModel / Model；桌面检查 View → store → IPC → domain；组件库检查 L0–L5）

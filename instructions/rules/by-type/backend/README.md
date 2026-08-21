@@ -14,6 +14,10 @@ related: [rule.modification.backend]
 ## 默认边界
 
 - 传输层、应用/领域、持久化分开；新功能进现有边界，不按「这次任务」另起一层同名抽象。
+
+## UI 与实现分层
+
+无桌面 View。handler / 传输层只译协议；领域规则与持久化分别在应用/领域层与存储层。不要把这套叫做 MVVM。对照 [stack-layering.md](../../common/stack-layering.md)。
 - 鉴权、多租户、审计跟现有中间件，不在单个接口上发明私有认证。
 
 ## 质量门禁

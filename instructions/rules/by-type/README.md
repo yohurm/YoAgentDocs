@@ -13,7 +13,7 @@ related: [rules.hub, template.type-pack]
 - **能力层**：这类软件做什么（与 `research/by-stack/` 目录名对齐）
 - **平台层**：跑在哪、怎么验收（有设备才走真机等）
 
-识别到之后都装。没有对应目录就只用公共规则。新建用 [templates/instructions/type-pack.md](../../../templates/instructions/type-pack.md)。
+识别到之后都装。分层**用词**以 [common/stack-layering.md](../common/stack-layering.md) 为准：Android 页面、桌面 IPC、组件库 L0–L5 不是同一套。没有对应目录就只用公共规则。新建用 [templates/instructions/type-pack.md](../../../templates/instructions/type-pack.md)。
 
 ## 能力层
 

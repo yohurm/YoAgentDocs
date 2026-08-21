@@ -11,7 +11,7 @@ related: [rules.type.ui-kit.file-srp, rules.type.ui-kit.lifecycle, rules.type.ui
 
 # 组件分层
 
-每个组件自下而上拆层。禁止在一个类/文件里同时承担多层。
+每个组件自下而上拆层。禁止在一个类/文件里同时承担多层。这是**控件**分层，不是 Android 页面 MVVM，也不是桌面 `View → IPC → domain`。
 
 ```
 L0  数值单源     token / 常量池（色、字号、圆角、间距、时长、控件尺寸）

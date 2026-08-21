@@ -6,7 +6,7 @@ severity: should
 scope: type
 when: always
 when_to_use: Android 应用或 Android 上的组件库
-related: [rule.modification.android, rules.type.ui-kit, rule.common.architecture]
+related: [rule.modification.android, rules.type.ui-kit, rule.common.architecture, rule.common.stack-layering]
 ---
 
 # Android 类型包
@@ -18,7 +18,16 @@ related: [rule.modification.android, rules.type.ui-kit, rule.common.architecture
 - 构建用该仓库已约定的 JDK 与 Gradle。同一台机器上多个 Android 工程并行编译时，默认**串行**，或为任务使用独立的 Gradle user home，避免共用 daemon 导致超时后才成功。
 - UI 尺寸与官方设计稿对齐观感（鸿蒙文档常用 vp，Android 用 dp/px），单位不同不作为「可以对不齐」的理由。
 - 设备差异、板级属性等适配逻辑放在明确的一层，不要散落在各个界面里。
-- **MVVM（有界面的应用模块）：** View 不直访数据库/网络/文件；业务状态不进 Activity/Fragment/自定义 View。组件库模块本身不是页面，遵守 [ui-kit](../ui-kit/) 的分层，不要为每个控件硬套 ViewModel。
+
+## UI 与实现分层
+
+**仅有界面的应用模块**采用 MVVM（这是本类型包的层名，不要套到桌面 IPC 或组件库）：
+
+- View：展示与把事件交给 ViewModel；不直访数据库 / 网络 / 文件。
+- ViewModel：业务状态与决策；不操作具体 View 控件。
+- Model / Repository：取数与持久化。
+
+组件库模块本身不是页面，遵守 [ui-kit](../ui-kit/) 的 L0–L5，不要为每个控件硬套 ViewModel。对照见 [stack-layering.md](../../common/stack-layering.md)。
 
 ## 质量门禁
 

@@ -18,6 +18,7 @@ related: [role.architect, playbook.architecture-design]
 - [../roles/architect.md](../roles/architect.md)
 - [../../../playbooks/architecture-design.md](../../../playbooks/architecture-design.md)
 - [../../rules/common/architecture.md](../../rules/common/architecture.md)
+- [../../rules/common/stack-layering.md](../../rules/common/stack-layering.md)
 - [../../rules/common/design-sources.md](../../rules/common/design-sources.md)
 
 再按工作区叠加能力/平台类型包。设计 Yo 组件时再读 [../../rules/by-type/ui-kit/README.md](../../rules/by-type/ui-kit/README.md)。

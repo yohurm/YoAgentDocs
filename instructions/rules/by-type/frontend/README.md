@@ -17,7 +17,18 @@ related: [rule.modification.frontend, rules.type.ui-kit]
 
 - 跟随仓库已有框架与目录；不平行引入第二套 UI 库或状态库。
 - 样式跟现有 token；没有设计系统时模仿邻近页面。
-- 页面不直访后端细节：走仓库已有的 store / service / ViewModel。禁止在组件里散落请求与持久化。
+
+## UI 与实现分层
+
+```
+页面组件 → 仓库已有的 store / service → API 客户端 → 后端
+```
+
+- 页面不直访后端细节，禁止在组件里散落请求与持久化。
+- 层名跟该前端仓库走。只有仓库自己声明了 MVVM 时才用 ViewModel 这个词；默认叫 store / service。
+- 可复用控件走 [ui-kit](../ui-kit/)，不要把页面 store 塞进组件库。
+
+对照 [stack-layering.md](../../common/stack-layering.md)。
 
 ## 质量门禁
 

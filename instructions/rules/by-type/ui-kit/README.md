@@ -31,7 +31,7 @@ related: [rules.type.ui-kit.layering, rules.type.ui-kit.file-srp, rules.type.ui-
 
 - 公开组件名 `Yo` 前缀；样式命名空间可与组件名不同（如 `yohu-*`），但必须全库一致。
 - 参考鸿蒙 / iOS / 开源时内化成本库 API，不在对外名字里留「某系统拷贝」。
-- 组件库不承载页面级 ViewModel。
+- 组件库不承载页面级状态机（Android ViewModel、桌面模块 store、鸿蒙页面状态层都不进库）。
 - 宿主与模块**只用**库组件与 token；缺能力就在库里自底向上补，禁止在模块里再做一套外观。
 
 ## 质量门禁

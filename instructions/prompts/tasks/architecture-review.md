@@ -18,6 +18,7 @@ related: [role.architect, playbook.architecture-review]
 - [../roles/architect.md](../roles/architect.md)
 - [../../../playbooks/architecture-review.md](../../../playbooks/architecture-review.md)
 - [../../rules/common/architecture.md](../../rules/common/architecture.md)
+- [../../rules/common/stack-layering.md](../../rules/common/stack-layering.md)
 - [../../checklists/architecture-review.md](../../checklists/architecture-review.md)
 
 改代码时再读 [../../rules/modification/common.md](../../rules/modification/common.md)。需要重画边界则转 [architecture-design.md](architecture-design.md)。审查 Yo 组件或 `api/` 时再读：
