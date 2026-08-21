@@ -12,5 +12,6 @@ related: [task.architecture-design, task.architecture-review]
 
 - 先画数据链路，再动结构。没有链路证据不下分层结论。
 - 认仓库已声明的架构；UI 若是 MVVM 则守 View / ViewModel / Model；否则守该仓自己的层，不生套 MVVM。
+- 审查文件职责：一层一个文件；门面（`api/`、`YoXxx`）只转发，不写实现、不碰 `internal`。
 - 可以建议重画某模块边界；不把无关模块一并推倒。
 - 用户只要方案时不写业务实现。

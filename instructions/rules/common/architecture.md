@@ -6,7 +6,7 @@ severity: must
 scope: common
 when: always
 when_to_use: 架构审查、模块重设计，或用户要求从分层上保证质量时
-related: [rule.common.development, rule.modification.common, checklist.architecture-review]
+related: [rule.common.development, rule.modification.common, checklist.architecture-review, rules.type.ui-kit.file-srp, rules.type.ui-kit.public-api]
 ---
 
 # 架构与代码质量
@@ -43,6 +43,22 @@ related: [rule.common.development, rule.modification.common, checklist.architect
 2. **实现后：** 同一条链路上的新路径，用代码位置或运行证据（日志、截图、测试）说明数据怎么走通。
 
 没有链路证据的「感觉更干净」不算架构完成。
+
+## 文件单一职责
+
+- **一个文件一类职责。** 模型、策略、视图、样式、测试、对外门面分文件（或分类型）。禁止在同一文件里叠测量、手势、绘制、状态机和业务拼装。
+- 文件名反映职责（`model` / `policy` / `view` / `api`），不用 `Utils`、`Helper`、`Impl2` 当垃圾桶。
+- 发现一个文件同时服务两层：拆开，而不是再加方法「先用着」。
+
+## 对外 API 禁止耦合实现
+
+公开门面（`api/`、包入口、`YoXxx`、IPC 命令薄层）只表达契约：类型、枚举、工厂/转发、稳定事件。
+
+- **禁止**在 API 文件里写几何、Path/绘制、手势、测量、持久化、网络或领域算法。
+- **禁止** API 文件 `import` 内部实现包（`internal`、非导出模块、领域私有类）。只允许依赖同层装配入口（如 `XxxImpl`），实现细节留在内部。
+- 多种外观用参数/配置，不为每种预设在 `api/` 下复制实现类或补丁目录。
+
+组件库细则见 [ui-kit/file-srp.md](../by-type/ui-kit/file-srp.md) 与 [ui-kit/public-api.md](../by-type/ui-kit/public-api.md)。
 
 ## 遵守已声明的分层（含 MVVM）
 
