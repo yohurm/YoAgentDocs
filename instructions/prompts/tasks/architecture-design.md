@@ -43,5 +43,5 @@ related: [role.architect, playbook.architecture-design]
 
 ## 不做
 
-- 不在方案阶段加补丁式兼容层「先跑通」。
+- 不在方案阶段加补丁式兼容层「先跑通」；目标分层不得依赖双轨或永久适配。
 - 不把调研源码拷进业务仓库或本知识库。

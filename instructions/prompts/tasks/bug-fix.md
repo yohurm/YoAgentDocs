@@ -36,7 +36,7 @@ related: [role.implementer, playbook.bug-fix]
 按手册。沿数据链路定位后：
 
 - 局部逻辑错误 → 行为修复。
-- 边界/越级/补丁堆积 → 升级 [architecture-review.md](architecture-review.md)。
+- 边界/越级/补丁堆积/兼容层 → 升级 [architecture-review.md](architecture-review.md)。
 
 ## 完成标准
 
@@ -46,5 +46,5 @@ related: [role.implementer, playbook.bug-fix]
 
 ## 不做
 
-- 不在调用处叠兼容函数代替修根因。
+- 不在调用处叠兼容函数或兼容层代替修根因。
 - 不把「顺便重构」塞进行为修复。
