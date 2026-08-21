@@ -6,7 +6,7 @@ severity: must
 scope: type
 when: always
 when_to_use: 新增或重做任一 Yo 组件时
-related: [rules.type.ui-kit.file-srp]
+related: [rules.type.ui-kit.file-srp, rules.type.ui-kit.lifecycle, rules.type.ui-kit.state-ownership]
 ---
 
 # 组件分层
@@ -19,7 +19,7 @@ L1  共享能力     涟漪、按压、光感、Presence、圆角几何、裁剪
 L2  模型         纯数据与不变式，不碰 View / DOM
 L3  策略         宽度、隐藏、选中、手势阈值等规则
 L4  视图         铬层（边框/阴影/光感）与内容区（可裁剪的孩子）
-L5  对外 API     YoXxx 门面：创建、配置、事件；无布局 / 绘制算法
+L5  对外 API     YoXxx 门面：创建、配置、事件、destroy；无布局 / 绘制 / 释放顺序
 ```
 
 ## 落地对照
@@ -35,7 +35,7 @@ L5  对外 API     YoXxx 门面：创建、配置、事件；无布局 / 绘制�
 
 ## 必须
 
-- 先定层再写代码。新增能力问：它属于 L1 共享，还是该组件 L3 策略。按压缩放、涟漪、光感默认进 L1，不要复制进每个按钮。
+- 先定层再写代码。新增能力问：它属于 L1 共享，还是该组件 L3 策略。按压缩放、涟漪、光感默认进 L1，不要复制进每个按钮。运行时谁持有状态、何时 attach/destroy，见 [state-ownership.md](state-ownership.md) 与 [lifecycle.md](lifecycle.md)。
 - L4 必须能指出**内容区**边界（见 [content-region.md](content-region.md)）。铬层效果（阴影、描边、光感）不要和内容测量混在一个函数里。
 - 圆角：半径 token 在 L0；拟合 / Path / Outline / Drawable 在 L1（`widget/common/corner`）。组件只调 L5 `YoCorner`，禁止私自 `addRoundRect` / `GradientDrawable.setCornerRadius`。玻璃 / SDF 锁定 `CIRCULAR`。
 - 动效：组件只引用配方名 / 语义时长，不写裸 `ms` 或第二套曲线。

@@ -6,7 +6,7 @@ severity: must
 scope: type
 when: always
 when_to_use: 增加或修改 Yo 组件对外接口时
-related: [rules.type.ui-kit.file-srp]
+related: [rules.type.ui-kit.file-srp, rules.type.ui-kit.lifecycle]
 ---
 
 # 对外 API
@@ -14,7 +14,7 @@ related: [rules.type.ui-kit.file-srp]
 ## 必须
 
 - 宿主只依赖 `YoXxx`（及必要的公开类型/枚举）。实现类型不出现在 `api/` 或包入口。
-- **L5 门面要薄。** `api/` 是接口（或同等薄转发）：枚举、公开数据、`create()` / 静态转发。禁止在 `api/` 写几何拟合、Path / Outline / Drawable、手势或测量算法。
+- **L5 门面要薄。** `api/` 是接口（或同等薄转发）：枚举、公开数据、`create()` / 静态转发、`destroy` 与浮层呈现回调。禁止在 `api/` 写几何拟合、Path / Outline / Drawable、手势、测量算法或资源释放顺序。
 - `api/` 只允许依赖同能力的装配类（`RippleImpl`、`CornerImpl`、`TabsImpl`）。**禁止** `import …internal`。
 - `api/`（或 `index.ts` 的公开面）禁止补丁类、兼容别名、实验目录。过渡代码放 internal，做完即删。
 - 一种组件一条主入口。多种预设 = 参数/建造配置，不是平行的 `YoXxxWarning`、`YoXxxList` 实现树。

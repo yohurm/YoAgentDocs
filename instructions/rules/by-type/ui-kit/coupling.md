@@ -6,7 +6,7 @@ severity: must
 scope: type
 when: always
 when_to_use: 组件之间、组件与动画/宿主之间的依赖
-related: [rules.type.ui-kit.layering, rule.common.architecture]
+related: [rules.type.ui-kit.layering, rules.type.ui-kit.state-ownership, rule.common.architecture]
 ---
 
 # 禁止耦合
@@ -24,6 +24,7 @@ related: [rules.type.ui-kit.layering, rule.common.architecture]
 - 动画系统不依赖 Loading 示例页；Loading 只消费动画能力。
 - Ripple / 按压 / 光感 / 圆角是 L1。控件只走该能力的 L5（`YoRipple`、`YoCorner`），不把实现抄进去，也不为了「看起来裁对」去改 ripple 尺寸冒充内容区（见 [content-region.md](content-region.md)）。
 - L5 只依赖同能力 `XxxImpl`。禁止 L5 点名 L1 `internal`（例如 `YoCorner` → `CornerPath`）。
+- 平台资源（监听、动画令牌、Popup）只由该组件生命周期所有者释放，B 不得去 detach A 的内部句柄。见 [lifecycle.md](lifecycle.md)。
 - 沉浸光感：材质分层（霜面、透镜等）在光感模块内部；控件只选角色/强度。不要在 Tabs、Dialog 里各写一套着色器参数。
 
 ## 宿主与模块
