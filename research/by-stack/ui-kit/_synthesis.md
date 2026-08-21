@@ -15,6 +15,7 @@ stack:
 |-------------|--------|----------|
 | [openharmony/arkui_ace_engine（沉浸光感）](openharmony--arkui_ace_engine-immersive.md) | ImmersiveMaterial → 滤镜/着色器 → Rosen 节点 | adapt 档位短路与 LUT 接线 |
 | [arkui_ace_engine Dialog 空间弹出](openharmony--arkui_ace_engine-dialog-spatial.md) | API 26 Dialog：0.2 缩放+半高平移从中下散开；流光底→顶；关闭不回放 | adapt 打开映射；anti-pattern：360° sweep、关闭走旧 scale |
+| [HarmonyOS Dialog 弹出扫光](harmony--dialog-appear-flow-light.md) | 白光线贴 SDF 边扫；Dialog 外晕 0；250 是 bloom 不是 stroke | adapt 细帽+clip；anti-pattern：28dp 填色 |
 | [HarmonyOS 沉浸光感分层](harmony--immersive-light-layers.md) | 滤镜 / overlay / 组件自叠的层所有权 | reuse-pattern：层不许越级 |
 | [openharmony/graphic_graphics_effect](openharmony--graphic_graphics_effect.md) | SDF 边缘光与 FrameGradientMask 的 RuntimeShader | adapt 公式；anti-pattern：闭合描边 |
 | [HarmonyOS SDF 边缘光](harmony--sdf-edge-light.md) | 「沿边流转」= SDF 带宽×扇形；overlay 另用 SDF×mask | 白底 occlusion，禁止加粗 stroke |
@@ -47,7 +48,7 @@ stack:
 ### Dialog 空间弹出（2026-08-20 增补）
 
 - **打开语言**是「中心 scale 0.2→1 + translateY = 0.5×height→0」，视觉原点在最终矩形中下，不是 Sheet 居中的 0.86。
-- **扫光**是 EdgeLight 底边→顶边，不是绕 clip 中心转一圈。
+- **扫光**是 EdgeLight 底边→顶边的**细边缘帽**（Dialog 外晕 0、细边 ~10px），不是绕 clip 中心转一圈，也不是铺满卡片的粗扫描带。合成是 OverlayNG **加色**（`image.rgb + light.rgb`），不是 SRC_OVER 半透明描边；L7 若拆到 sibling View，必须把 ADD 一起带走，否则白玻璃上看不见。
 - **打开时钟**挂在 AfterLayout，不在「第一帧霜面编译完」。
 - **关闭**官方是 opacity→0 + FORWARDS，最后一帧透明后才卸节点；不要把不透明 0.2 缩放停在屏幕上。
 - 弹簧 stiffness 322 / damping 27 可换成 perceptual response；关闭官方不回放形变，YoUI 若回放打开语言，收回末帧仍须收到 alpha 0。
@@ -108,3 +109,7 @@ stack:
 HdsTabs 动效（2026-08-20）：入选 ace_engine TabBarPattern + Spatialization 接线 + 主题笔记（HDS 无仓）。落选 HarmonyOS-Cases customanimationtab、子页签下划线 Demo（那是 SubTabBar，不是底部 HdsTabs）。iHongRen/harmony-study-demo 只调 API，无曲线，不单列。
 
 Dialog 空间弹出（2026-08-20）：入选 `arkui_ace_engine` `PlayDistortion` / `PlayFlowLight`。社区 DialogHub / 自定义 `transition` 是另一套进场，不单列。`graphic_graphics_effect` EdgeLight 着色器只作对照，Dialog 喂的是 `EdgeLightParam`。
+
+Dialog 弹出扫光形态（2026-08-21）：补读 `UpdateEdgeLightFilter` 的 Dialog 分支（inner 0.1 / outer **0**）和 FrameGradientMask `AxialCoreWidth=0.3`。HDS `DualEdgeFlowLight` 是周长光线，产品不同，不单列作 Dialog L7 实现仓。落选把 `thickness=250` 当 Canvas stroke 的社区扫光 Demo。
+
+Dialog 扫光看不见（2026-08-21）：同一主题补读 `GESDFEdgeLight::MakeImageMerger` 与 OverlayNG。入选仍是 ace_engine + graphics_effect + graphic_2d，不另开仓。根因是 YoUI L7 sibling overlay 丢了加色，不是再调粗细。
