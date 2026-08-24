@@ -22,6 +22,8 @@ stack:
 | [openharmony/graphic_graphic_2d 点光源](openharmony--graphic_graphic_2d-point-light.md) | 半径 `≈1.731×z`、灯/受光配对、IlluminatedType | reuse-pattern：自照明 + 出界灯 |
 | [HdsTabs 点光源](harmony--hdstabs-point-light.md) | `lightColor` → Rosen 点光源色；HDS 闭源 | anti-pattern：当 rim / SDF overlay |
 | [HdsTabs 动效](harmony--hdstabs-motion.md) | 切页默认 0；bounce DOWN；栏显隐 228/30 | reuse-pattern：通道分权；anti-pattern：切页滑页 |
+| [HdsTabs 项切换](harmony--hdstabs-item-switch.md) | 仅选中 id 变化弹 DOWN；色瞬时；bind 须先 cancel | reuse-pattern：bounce 叠出血；anti-pattern：整项 scale |
+| [bindSheet 全量](harmony--bindsheet-full.md) | SIDE 无档无条；同面板返回 ≠ 再弹一层 | reuse-pattern：关闭关整棵；anti-pattern：FAQ 800ms 自写滑页 |
 | [arkui_ace_engine Tabs 动效](openharmony--arkui_ace_engine-tabs-motion.md) | TabBarPattern 弹簧 / Symbol 触发 / duration=0 | reuse-pattern：listItemSwipeSpring |
 | [Spatialization HdsTabs 隐藏](HarmonyOS_Samples--Spatialization.md) | 滚动方向调 applyHide/Show，曲线在 HDS | lesson-only：应用不自写藏栏 |
 | [microsoft/fluentui react-motion](microsoft--fluentui.md) | atom → Presence 工厂 → Fade；enter/exit 默认同时长 | reuse-pattern：换牌原语与按钮分层 |
@@ -95,6 +97,7 @@ stack:
 - 实现配方引用本层主题笔记，而不是再从 GitHub README 推断。
 - content-region 可补一句：表头轨道是铬，标题/排序是内容区；`.yohu-interactive` 不得铺满轨道来假装列界。
 - 底部页签动效：切页默认 0；选中 bounce 是图标 translationY DOWN，禁止整栏 scale；栏显隐用 stiffness 228 / damping 30，不要 `LOCAL` 贝塞尔。
+- 半模态：SIDE 无档位/控制条且高度全屏；同面板 push 只换内容，关闭按钮关掉整棵栈；层级返回不得覆盖用户 leading。
 
 已升格（2026-08-20，用户确认）：圆角几何进 L1；L5 门面要薄、禁止 `api/` import `internal`；组件禁止私自 `addRoundRect` / `GradientDrawable.setCornerRadius`；玻璃 / SDF 锁定 CIRCULAR。见 `instructions/rules/by-type/ui-kit/` 的 public-api / layering / file-srp / coupling。
 
