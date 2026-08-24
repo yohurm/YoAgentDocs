@@ -13,7 +13,7 @@ related: [root.readme, root.catalog, root.agents]
 1. **MANDATORY READ** [AGENTS.md](AGENTS.md) 与 [CATALOG.md](CATALOG.md)。
 2. 匹配一条任务，**MANDATORY READ** 该任务全文（不要只看书名）。
 3. 再读任务里的 MANDATORY READ（角色、手册、规则、类型包）。
-4. 按任务完成标准收尾。用户未要求则不 commit / push。
+4. 按本轮验收条目与类型包门禁**全部通过**才允许写完成总结、才允许结束对话。任一未过则继续做。写法见 [instructions/rules/common/acceptance.md](instructions/rules/common/acceptance.md)。用户未要求则不 commit / push。
 
 工作区是业务仓库时：若能访问本库，同样先读本库 `CATALOG.md`，不要等用户把短提示贴进对话。
 

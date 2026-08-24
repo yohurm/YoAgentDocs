@@ -4,13 +4,13 @@ type: checklist
 status: active
 when: always
 when_to_use: 声称完成一轮开发或调研前
-related: [rule.common.quality]
+related: [rule.common.quality, rule.common.acceptance]
 ---
 
 # 结束前
 
-- [ ] 用户任务已满足，没有用额外工作替换原目标
-- [ ] 已按当前类型包做验证（Android 已接真机则含安装/截图/Logcat；桌面能启动则含打开应用；否则已写明缺口）；未把未验证写成已验证
+- [ ] 用户任务已满足，没有用额外工作替换原目标；本轮验收条目与类型包门禁**全部通过**（不是 90%）；未在未完成时写总结或结束对话
+- [ ] 已按当前类型包做验证（Android 已接真机则含安装/截图/Logcat；桌面能启动则含打开应用；否则已写明缺口且未声称完成）；未把未验证写成已验证
 - [ ] 没有提交密钥、无关格式化、范围外重构
 - [ ] 用户未要求则未 commit / push
 - [ ] 若写了知识库文档：路径正确、frontmatter 完整、索引（Hub）已更新

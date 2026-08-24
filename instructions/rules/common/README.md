@@ -16,5 +16,6 @@ when_to_use: 装载全部项目公共开发规则时
 - [stack-layering.md](stack-layering.md) 各技术栈 UI / 实现层名（禁止一律叫 MVVM）
 - [design-sources.md](design-sources.md) 官方文档先于实现
 - [quality.md](quality.md) 完成标准（验证方式见类型包）
+- [acceptance.md](acceptance.md) 怎么写验收、全部通过才允许结束对话
 - [git.md](git.md) 版本与提交
 - [security.md](security.md) 密钥与权限
