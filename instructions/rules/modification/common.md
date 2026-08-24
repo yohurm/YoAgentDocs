@@ -17,7 +17,7 @@ related: [rule.common.development, rule.common.architecture, checklist.before-mo
 
 - 先读调用方、边界和已有验证，再改。
 - 只改完成任务所需的模块与行；禁止无关重排、无关重命名、整文件格式化。
-- 根因在哪一层就改哪一层，避免在调用处叠一层掩盖。
+- 根因在哪一层就改哪一层，避免在调用处叠一层掩盖。禁止空判断/吞异常/延时重试/只改 UI 当修复；禁止为「保险」加无依据分支。细则见 [architecture.md](../common/architecture.md)「禁止防御性修补」。
 - 保持未声明变更的对外契约（API、CLI、文件格式、环境变量）。
 - 风格跟周围代码走。
 

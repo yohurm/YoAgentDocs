@@ -12,7 +12,7 @@ when_to_use: 装载全部项目公共开发规则时
 适用于所有项目，与具体框架无关。始终装载本目录下各篇。
 
 - [development.md](development.md) 编码与结构
-- [architecture.md](architecture.md) 分层、内聚、硬编码、严禁兼容层、数据链路证据
+- [architecture.md](architecture.md) 分层、内聚、模型分家、硬编码、严禁兼容层、禁止防御性修补、数据链路证据
 - [stack-layering.md](stack-layering.md) 各技术栈 UI / 实现层名（禁止一律叫 MVVM）
 - [design-sources.md](design-sources.md) 官方文档先于实现
 - [quality.md](quality.md) 完成标准（验证方式见类型包）
