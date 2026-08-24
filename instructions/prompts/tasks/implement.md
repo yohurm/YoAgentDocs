@@ -20,6 +20,7 @@ related: [role.implementer, playbook.implement]
 - [../../rules/common/architecture.md](../../rules/common/architecture.md)
 - [../../rules/common/design-sources.md](../../rules/common/design-sources.md)
 - [../../rules/common/quality.md](../../rules/common/quality.md)
+- [../../rules/common/acceptance.md](../../rules/common/acceptance.md)
 
 叠加能力类型包与平台类型包（如 `ui-kit` + `android`）。改已有代码时再读 [../../rules/modification/common.md](../../rules/modification/common.md)。目标是 Yo 组件或组件库时再 **MANDATORY READ** [../../../playbooks/yo-component.md](../../../playbooks/yo-component.md)。
 
@@ -35,13 +36,16 @@ related: [role.implementer, playbook.implement]
 
 ## 步骤
 
-按手册。自驱动补齐状态（默认/按压/禁用/空态等），直到门禁满足或环境不具备（须写明）。
+按手册。动手前列出本轮可判定验收清单（用户条目 + 类型包门禁）。自驱动补齐状态（默认/按压/禁用/空态等），直到**全部**验收通过。任一未过：不总结、不结束对话，继续做。环境做不到的验证写明缺口，且不算完成。
 
 ## 完成标准
 
-- 行为符合规范或用户任务。
+全部满足才允许总结、才允许结束对话：
+
+- 本轮每条验收均为通过，并附证据。没有「先交 90%」。
+- 行为符合规范或用户任务；关键状态（含空/错/禁用等清单内项）均已覆盖。
 - 无新增散落硬编码与越级调用。
-- 类型包验证已做或已声明缺口。
+- 类型包门禁全部通过。环境缺口已写明且对应条目仍为未通过，本轮未完成。
 
 ## 不做
 
