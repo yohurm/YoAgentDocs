@@ -1,0 +1,4 @@
+# 文档 / 知识库 overlay — 接在 common 之后。本仓库自身用 common + 本文件。
+
+*.local.md
+/site

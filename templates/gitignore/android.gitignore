@@ -1,0 +1,17 @@
+# Android overlay — 接在 common 之后。
+# .gradle / .idea / .kotlin / .cxx / .externalNativeBuild 已由 .*/ 覆盖。
+
+build/
+captures/
+local.properties
+*.iml
+*.apk
+*.aab
+*.ap_
+output-metadata.json
+*.hprof
+
+# 签名与 Firebase 密钥。若团队约定入库 google-services.json，删掉下一行。
+*.jks
+*.keystore
+google-services.json

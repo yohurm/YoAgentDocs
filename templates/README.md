@@ -2,7 +2,7 @@
 id: templates.hub
 type: hub
 status: active
-when_to_use: 新增任一知识库文档时先选骨架
+when_to_use: 新增知识库文档骨架或工程脚手架（如 .gitignore）时
 ---
 
 # 模板
@@ -23,3 +23,7 @@ when_to_use: 新增任一知识库文档时先选骨架
 
 - [research/project-study.md](research/project-study.md)
 - [research/stack-synthesis.md](research/stack-synthesis.md)
+
+## 工程脚手架
+
+- [gitignore/](gitignore/) 新建仓库的 `.gitignore`：先 common，再按类型包叠 overlay。点目录默认不提交。

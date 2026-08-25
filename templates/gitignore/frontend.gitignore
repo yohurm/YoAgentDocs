@@ -1,0 +1,26 @@
+# Web 前端 overlay — 接在 common 之后。
+# .next / .nuxt / .cache / .vite / .svelte-kit / .docusaurus / .yarn 等点目录已由 .*/ 覆盖。
+# Yarn Berry 零安装需要跟踪 .yarn/releases 等：先反向包含目录（见文末）。
+
+node_modules/
+jspm_packages/
+bower_components/
+dist/
+coverage/
+*.lcov
+*.tsbuildinfo
+*.tgz
+.eslintcache
+.stylelintcache
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# Yarn Berry：父目录被 .*/ 忽略后必须先放出目录本身。
+!.yarn/
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+.pnp.*

@@ -1,0 +1,15 @@
+# Go overlay — 接在 common 之后。
+# vendor/ 默认跟踪。本机工作区文件 go.work 不入库。
+
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+coverage.*
+*.coverprofile
+profile.cov
+go.work
+go.work.sum

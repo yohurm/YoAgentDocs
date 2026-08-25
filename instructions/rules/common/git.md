@@ -6,7 +6,7 @@ severity: must
 scope: common
 when: always
 when_to_use: 涉及 git、提交、分支、远程时
-related: [rule.common.security]
+related: [rule.common.security, templates.gitignore.hub]
 ---
 
 # 版本与提交
@@ -26,3 +26,4 @@ related: [rule.common.security]
 - 用户要求提交且改动跨多个模块时，按模块或功能分别提交，而不是一个杂包。
 - 未要求时不开 PR、不新建长期分支。
 - 远程操作前确认当前分支与跟踪关系，避免推错仓库。
+- 新建或补全仓库 `.gitignore` 时，从 [templates/gitignore](../../../templates/gitignore/) 拼接：先 `common.gitignore`（点目录默认不提交），再叠类型包 overlay。不要整份拷贝 GitHub 的 `VisualStudio.gitignore` 或 JetBrains 的「部分提交 `.idea`」。

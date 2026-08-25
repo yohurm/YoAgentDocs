@@ -1,0 +1,30 @@
+# Windows 桌面 overlay — 接在 common 之后。
+# .vs / .idea / .vscode 已由 .*/ 覆盖。
+# WebView UI 再叠 frontend；Cargo 再叠 rust。
+
+[Dd]ebug/
+[Rr]elease/
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.rsuser
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+AppPackages/
+BundleArtifacts/
+*.appx
+*.appxbundle
+*.appxupload
+*.msix
+*.pdb
+*.nupkg
+*.snupkg
+publish/
+*.pubxml
+*.publishproj
+artifacts/
+.artifacts/

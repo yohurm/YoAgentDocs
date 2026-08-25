@@ -1,0 +1,8 @@
+# Rust / Cargo overlay — 接在 common 之后。
+
+target/
+debug/
+**/*.rs.bk
+*.pdb
+**/mutants.out*/
+rustc-ice-*.txt

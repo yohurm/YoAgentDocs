@@ -1,0 +1,17 @@
+# HarmonyOS / OpenHarmony overlay — 接在 common 之后。
+# .hvigor / .idea / .cxx / .preview / .test / .appanalyzer / .clangd 已由 .*/ 覆盖。
+# 不忽略：oh-package-lock.json5、build-profile.json5、hvigor wrapper、.clang-format、.clang-tidy。
+
+oh_modules/
+node_modules/
+**/build/
+local.properties
+*.iml
+*.hap
+*.har
+*.hsp
+*.app
+**/BuildProfile.ets
+*.p12
+*.jks
+*.keystore
