@@ -13,9 +13,9 @@ related: [role.online-researcher, task.online-deep-research]
 
 ## Clone 约定
 
-- 根目录：Windows 下为 `%TEMP%\YoAgentResearch\`（PowerShell：`Join-Path $env:TEMP 'YoAgentResearch'`）。
+- 根目录：Windows 下为 `%TEMP%\YoAgentResearch\`（PowerShell：`Join-Path $env:TEMP 'YoAgentResearch'`）。不要改用户 TEMP。
 - 每个仓库：`<owner>--<repo>`，例如 `langchain-ai--langgraph`。
-- 使用 git clone；不加入 YoAgentDocs 的 submodule，不把源码复制进本库。
+- 使用 git clone，GitHub 默认 SSH；不加入 YoAgentDocs 的 submodule，不把源码复制进本库。
 - 默认浅克隆即可（`--depth 1`）；需要追历史再加深。
 - clone 默认保留，文档中记录路径；不自动 `rm`。
 
