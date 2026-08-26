@@ -1,5 +1,5 @@
 ---
-id: research.adobe-react-spectrum-table
+id: research.adobe-react-spectrum
 type: project-study
 status: active
 when: research

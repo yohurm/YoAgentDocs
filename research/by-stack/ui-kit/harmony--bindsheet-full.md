@@ -1,11 +1,11 @@
 ---
 id: research.harmony-bindsheet-full
-type: project-study
+type: topic-study
 status: active
 when: research
 stack:
   capability: ui-kit
-  languages: [arkts, cpp]
+  languages: [ArkTS, C++]
   frameworks: [harmonyos, arkui]
 also_relevant: []
 utilization: [reuse-pattern, adapt, anti-pattern]
@@ -13,7 +13,6 @@ source:
   platform: other
   repo: HarmonyOS bindSheet / SheetOptions
   url: https://developer.huawei.com/consumer/cn/doc/harmonyos-references/ts-universal-attributes-sheet-transition
-  cloned_to: local HarmonyOS-Developer-docs
 studied_at: 2026-08-24
 related:
   - research.harmony-hdstabs-motion

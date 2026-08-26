@@ -15,7 +15,7 @@ source:
   url: https://github.com/radix-ui/primitives
   cloned_to: "%TEMP%/YoAgentResearch/radix-ui--primitives"
 studied_at: 2026-08-20
-related: [research.microsoft-fluentui-motion, research.synthesis.ui-kit]
+related: [research.microsoft-fluentui, research.synthesis.ui-kit]
 ---
 
 # radix-ui/primitives（Presence）

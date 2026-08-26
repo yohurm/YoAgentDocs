@@ -1,11 +1,11 @@
 ---
 id: research.harmony-hdstabs-motion
-type: project-study
+type: topic-study
 status: active
 when: research
 stack:
   capability: ui-kit
-  languages: [cpp, arkts]
+  languages: [C++, ArkTS]
   frameworks: [harmonyos, arkui, hds]
 also_relevant: []
 utilization: [reuse-pattern, adapt, anti-pattern, lesson-only]
@@ -17,7 +17,7 @@ source:
 studied_at: 2026-08-20
 related:
   - research.openharmony-arkui_ace_engine-tabs-motion
-  - research.harmonyos-samples-spatialization
+  - research.HarmonyOS_Samples-Spatialization
   - research.harmony-hdstabs-point-light
 ---
 

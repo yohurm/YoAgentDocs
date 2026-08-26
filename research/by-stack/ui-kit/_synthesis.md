@@ -35,6 +35,7 @@ stack:
 | [racra smooth-corner](racra--smooth-corner-rect-android-compose.md) | s=0 走 RRect；胶囊回退 circular | reuse-pattern：曲线是策略不是 token |
 | [ag-grid 表头](ag-grid--ag-grid.md) | 轨道 / 标题 wrapper / resize 三节点 | reuse-pattern：分割线不进排序钮 |
 | [Spectrum Table](adobe--react-spectrum.md) | resizer::after 画列界；排序图标未激活不占位 | reuse-pattern：文本区裁剪 |
+| [VS Code 表格 sash](microsoft--vscode-table.md) | SplitView 做列轨道，标题只是 sash 格子里的文案 | reuse-pattern：区域划分 ≠ 文本 |
 | [HarmonyOS 静态/动态模糊样本](HarmonyOS_Samples--FuzzySceneOptimization.md) | 转场前一次性 createEffect；动画帧上 blur 会掉帧 | reuse-pattern：先有板再开弹簧 |
 
 ## 共同架构经验

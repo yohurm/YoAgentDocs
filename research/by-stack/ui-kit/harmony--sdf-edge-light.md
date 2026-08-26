@@ -5,7 +5,7 @@ status: active
 when: research
 stack:
   capability: ui-kit
-  languages: [cpp, sksl, java]
+  languages: [C++, SKSL, Java]
   frameworks: [openharmony, arkui, android]
 also_relevant: []
 utilization: [adapt, anti-pattern]

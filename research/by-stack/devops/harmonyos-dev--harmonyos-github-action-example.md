@@ -13,7 +13,6 @@ source:
   platform: github
   repo: harmonyos-dev/harmonyos-github-action-example
   url: https://github.com/harmonyos-dev/harmonyos-github-action-example
-  cloned_to: 未克隆（本机 git SSL 失败，读仓库内 `.gitignore` 原文）
 studied_at: 2026-08-25
 related: [research.synthesis.devops]
 ---

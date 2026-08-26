@@ -5,7 +5,7 @@ status: active
 when: research
 stack:
   capability: ui-kit
-  languages: [cpp, java]
+  languages: [C++, Java]
   frameworks: [harmonyos, arkui, rosen]
 also_relevant: []
 utilization: [adapt, anti-pattern]

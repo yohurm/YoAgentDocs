@@ -1,11 +1,11 @@
 ---
 id: research.harmony-hdstabs-item-switch
-type: project-study
+type: topic-study
 status: active
 when: research
 stack:
   capability: ui-kit
-  languages: [cpp, arkts]
+  languages: [C++, ArkTS]
   frameworks: [harmonyos, arkui, hds]
 also_relevant: []
 utilization: [reuse-pattern, adapt, anti-pattern]

@@ -1,5 +1,5 @@
 ---
-id: research.microsoft-vscode-keybindings
+id: research.microsoft-vscode
 type: project-study
 status: active
 when: research

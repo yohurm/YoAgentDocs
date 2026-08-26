@@ -11,9 +11,8 @@ also_relevant: []
 utilization: [reuse-pattern]
 source:
   platform: github
-  repo: toptal/gitignore（gitignore.io；公开页 404，以 API / 文档为准）
+  repo: toptal/gitignore
   url: https://www.toptal.com/developers/gitignore
-  cloned_to: 未克隆（仓库页 404；用官方 API 与文档）
 studied_at: 2026-08-25
 related: [research.synthesis.devops, research.github-gitignore]
 ---

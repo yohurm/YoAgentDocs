@@ -5,7 +5,7 @@ status: active
 when: research
 stack:
   capability: ui-kit
-  languages: [cpp]
+  languages: [C++]
   frameworks: [openharmony, rosen, skia]
 also_relevant: []
 utilization: [reuse-pattern, adapt]

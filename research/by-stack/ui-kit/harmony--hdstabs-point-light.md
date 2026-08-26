@@ -1,11 +1,11 @@
 ---
 id: research.harmony-hdstabs-point-light
-type: project-study
+type: topic-study
 status: active
 when: research
 stack:
   capability: ui-kit
-  languages: [cpp, arkts]
+  languages: [C++, ArkTS]
   frameworks: [harmonyos, arkui, hds, rosen]
 also_relevant: []
 utilization: [reuse-pattern, adapt, anti-pattern, lesson-only]

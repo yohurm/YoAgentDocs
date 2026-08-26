@@ -1,5 +1,5 @@
 ---
-id: research.microsoft-fluentui-motion
+id: research.microsoft-fluentui
 type: project-study
 status: active
 when: research

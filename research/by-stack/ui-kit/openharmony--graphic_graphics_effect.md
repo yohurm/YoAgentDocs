@@ -5,7 +5,7 @@ status: active
 when: research
 stack:
   capability: ui-kit
-  languages: [cpp, sksl]
+  languages: [C++, SKSL]
   frameworks: [openharmony, rosen, runtime-shader]
 also_relevant: [client-runtime]
 utilization: [adapt, anti-pattern, lesson-only]

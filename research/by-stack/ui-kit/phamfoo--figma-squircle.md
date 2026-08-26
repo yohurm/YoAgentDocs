@@ -5,7 +5,7 @@ status: active
 when: research
 stack:
   capability: ui-kit
-  languages: [typescript]
+  languages: [TypeScript]
   frameworks: [svg]
 also_relevant: []
 utilization: [adapt]

@@ -5,7 +5,7 @@ status: active
 when: research
 stack:
   capability: ui-kit
-  languages: [swift, objc, java]
+  languages: [Swift, Objective-C, Java]
   frameworks: [uikit, swiftui, android]
 also_relevant: []
 utilization: [adapt]

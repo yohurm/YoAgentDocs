@@ -1,17 +1,16 @@
 ---
 id: research.harmony-immersive-light-layers
-type: project-study
+type: topic-study
 status: active
 when: research
 stack:
   capability: ui-kit
-  languages: [arkts, cpp]
+  languages: [ArkTS, C++]
   frameworks: [harmonyos, arkui, hds]
 also_relevant: []
 utilization: [reuse-pattern, adapt, anti-pattern, lesson-only]
 source:
   platform: other
-  repo: harmony/immersive-light-layers
   url: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-immersive-light-sense
   cloned_to: "%TEMP%/YoAgentResearch/openharmony--arkui_ace_engine"
 studied_at: 2026-08-20

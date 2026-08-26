@@ -5,7 +5,7 @@ status: active
 when: research
 stack:
   capability: ui-kit
-  languages: [cpp, arkts]
+  languages: [C++, ArkTS]
   frameworks: [arkui, rosen]
 also_relevant: [client-runtime]
 utilization: [reuse-pattern, adapt, anti-pattern, lesson-only]

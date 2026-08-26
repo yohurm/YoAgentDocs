@@ -5,7 +5,7 @@ status: active
 when: research
 stack:
   capability: ui-kit
-  languages: [kotlin]
+  languages: [Kotlin]
   frameworks: [jetpack-compose]
 also_relevant: []
 utilization: [adapt, lesson-only]

@@ -1,11 +1,11 @@
 ---
-id: research.harmonyos-samples-fuzzy-scene-optimization
+id: research.HarmonyOS_Samples-FuzzySceneOptimization
 type: project-study
 status: active
 when: research
 stack:
   capability: ui-kit
-  languages: [arkts]
+  languages: [ArkTS]
   frameworks: [arkui, harmonyos]
 also_relevant: []
 utilization: [reuse-pattern, anti-pattern]

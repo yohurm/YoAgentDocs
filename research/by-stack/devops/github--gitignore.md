@@ -13,7 +13,6 @@ source:
   platform: github
   repo: github/gitignore
   url: https://github.com/github/gitignore
-  cloned_to: "%TEMP%/YoAgentResearch/github--gitignore（本机 git SSL 失败，改读官方 raw）"
 studied_at: 2026-08-25
 related: [research.synthesis.devops]
 ---

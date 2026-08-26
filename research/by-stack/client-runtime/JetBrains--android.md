@@ -1,5 +1,5 @@
 ---
-id: research.jetbrains-android-logcat
+id: research.JetBrains-android
 type: project-study
 status: active
 when: research

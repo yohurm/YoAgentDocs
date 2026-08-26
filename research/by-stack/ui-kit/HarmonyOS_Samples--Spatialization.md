@@ -1,18 +1,18 @@
 ---
-id: research.harmonyos-samples-spatialization
+id: research.HarmonyOS_Samples-Spatialization
 type: project-study
 status: active
 when: research
 stack:
   capability: ui-kit
-  languages: [arkts]
+  languages: [ArkTS]
   frameworks: [harmonyos, hds]
 also_relevant: []
 utilization: [reuse-pattern, lesson-only]
 source:
-  platform: other
+  platform: gitcode
   repo: HarmonyOS_Samples/Spatialization
-  url: https://gitee.com/harmonyos_samples
+  url: https://gitcode.com/HarmonyOS_Samples/Spatialization
   cloned_to: "%TEMP%/YoAgentResearch/HarmonyOS_Samples--Spatialization"
 studied_at: 2026-08-20
 related:
