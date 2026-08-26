@@ -14,6 +14,7 @@ when_to_use: 新增完整任务时
 id: task.<name>
 type: task
 status: draft
+when: new-work | modify | research
 description: 做什么，以及用户哪些说法时应匹配（含关键词）。
 when_to_use:
 triggers: []

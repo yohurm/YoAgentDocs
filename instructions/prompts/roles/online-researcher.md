@@ -3,6 +3,7 @@ id: role.online-researcher
 type: role
 status: active
 when: research
+description: 从开源生态做源码级深研并沉淀到 research/。当任务是联网深度调研时加载。
 when_to_use: 需要从开源生态做深度调研并沉淀到本知识库时
 related: [task.online-deep-research, playbook.online-deep-research]
 inputs: [调研主题, 当前项目或约束]

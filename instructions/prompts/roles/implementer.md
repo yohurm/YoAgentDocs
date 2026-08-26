@@ -2,8 +2,8 @@
 id: role.implementer
 type: role
 status: active
-when: new-work
-description: 按已定分层实现功能并做类型包验收。当任务是实现功能时加载。
+when: always
+description: 按已定分层实现功能并做类型包验收。当任务是实现功能或修复缺陷时加载。
 when_to_use: 实现、开发组件、对齐规范、全量做出来
 related: [task.implement, task.bug-fix]
 ---

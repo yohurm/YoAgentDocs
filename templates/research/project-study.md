@@ -17,7 +17,7 @@ type: project-study
 status: active
 when: research
 stack:
-  capability: agent | llm-app | frontend | backend | data | devops | client-runtime | security | other
+  capability: agent | llm-app | ui-kit | frontend | backend | data | devops | client-runtime | docs | security | other
   languages: []
   frameworks: []
 also_relevant: []
@@ -26,7 +26,8 @@ source:
   platform: github | gitcode | other
   repo: owner/name
   url:
-  cloned_to: "%TEMP%/YoAgentResearch/owner--name"
+  head:  # 可选：记录的 git HEAD
+  cloned_to: "%TEMP%/YoAgentResearch/owner--name"  # 未克隆则省略该字段
 studied_at: YYYY-MM-DD
 related: []
 ---

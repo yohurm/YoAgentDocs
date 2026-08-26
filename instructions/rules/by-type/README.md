@@ -29,6 +29,8 @@ related: [rules.hub, template.type-pack]
 | client-runtime | [client-runtime/](client-runtime/) | 桌面、IDE、CLI、应用壳 |
 | docs | [docs/](docs/) | 文档站与本知识库 |
 
+分类词与 `research/by-stack/` 对齐（`research/README.md`）。`security`（认证、密钥、供应链，仅当这是主贡献）与 `other`（暂放）是预留分类，尚无独立类型包时按公共规则。
+
 ## 平台层
 
 | 类型 | 目录 | 典型验证 |

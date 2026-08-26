@@ -18,7 +18,7 @@ related: [role.online-researcher, task.online-deep-research, playbook.online-dee
 
 调研主题：<必填：要解决的问题或要借鉴的能力>
 当前项目/约束：<可选>
-关注能力层：<可选：agent / llm-app / ui-kit / frontend / backend / data / devops / client-runtime / security / other>
+关注能力层：<可选：agent / llm-app / ui-kit / frontend / backend / data / devops / client-runtime / docs / security / other>
 Top N：<可选，默认 3～5>
 
 请读取 YoAgentDocs：

@@ -21,8 +21,9 @@ when_to_use: 新增知识库文档骨架或工程脚手架（如 .gitignore）�
 
 ## 调研
 
-- [research/project-study.md](research/project-study.md)
-- [research/stack-synthesis.md](research/stack-synthesis.md)
+- [research/project-study.md](research/project-study.md) 单仓库深研
+- [research/topic-study.md](research/topic-study.md) 跨仓库主题笔记（对标系统、动效、几何）
+- [research/stack-synthesis.md](research/stack-synthesis.md) 能力层横向总结
 
 ## 工程脚手架
 
