@@ -18,9 +18,12 @@ stack:
 | [logdyhq/logdy-ui](logdyhq--logdy-ui.md) | Space 暂停；INPUT 放行；但 document 级监听不可搬到工作台 | reuse-pattern / anti-pattern |
 | [amir20/dozzle](amir20--dozzle.md) | 壳 Ctrl+K vs 面板 Ctrl+F；复制走模型不是 DOM 选区 | reuse-pattern |
 | [Alex4SSB/ADB-Explorer](Alex4SSB--ADB-Explorer.md) | Explorer 拖出虚拟文件：`FILEDESCRIPTOR`+`FILECONTENTS`，GetData 才 adb pull | adapt / anti-pattern |
-| [Genymobile/scrcpy](Genymobile--scrcpy.md) | 拖入 = 路径入队 + `adb push`；明确不做拖出 | reuse-pattern / anti-pattern |
+| [Genymobile/scrcpy](Genymobile--scrcpy.md) | 投屏协议源 + 拖入 push；客户端按源码自写，不拉 `scrcpy.exe` | reuse-pattern / anti-pattern |
 | [tauri-apps/wry](tauri-apps--wry.md) | Windows 上 wry 接管 `IDropTarget`，HTML5 drop 没有完整路径 | reuse-pattern / anti-pattern |
 | [crabnebula-dev/drag-rs](crabnebula-dev--drag-rs.md) | Tauri 拖出骨架：`DoDragDrop`；载荷只认本机已有文件 | adapt / anti-pattern |
+| [yume-chan/ya-webadb](yume-chan--ya-webadb.md) | scrcpy 协议 TS 包 + WebCodecs 解码；ADB 重实现不可抄 | adapt / anti-pattern |
+| [barry-ran/QtScrcpy](barry-ran--QtScrcpy.md) | 工作台投屏按钮清单；独立 Qt 窗与 FFmpeg 不可搬 | lesson-only / anti-pattern |
+| [NetrisTV/ws-scrcpy](NetrisTV--ws-scrcpy.md) | WebView 要独立二进制视频通道；fork server 是反例 | adapt / anti-pattern |
 
 ## 共同架构经验
 
@@ -103,6 +106,76 @@ OLE 胶水留在 `yohu-app`；传输/安全根仍在 `yohu-files`。UI 只做命
 - **drop 落点**：Explorer 不回传目标文件夹（ADB-Explorer 放弃窗口标题嗅探）。拖出不能变成「pull 到用户悬停的那个目录」——那是保存对话框的活。
 - **本窗 drop**：wry 拖出时自身仍是 `IDropTarget`。落到自己身上应忽略，或只接受 Explorer 的 HDROP。
 
+### Android 投屏（工作台模块，源码实现客户端）
+
+约束修正：安装包 12 MB **不是**本模块硬限制。否决 `scrcpy.exe` 是因为要 **按源码自写客户端**、画面进 `YoPage` 面板，不是因为体积。设备侧仍用 **未修改** 的官方 `scrcpy-server`（隐藏 API / MediaCodec 不重写）。ADB 仍走 sidecar（ADR-v6-008）；scrcpy 线协议在 core 自写。
+
+四份源码叠成 Yohu 该写的链：
+
+```
+@yohu/module-mirror (YoPage + canvas + WebCodecs)
+  → @yohu/api  (mirror.start/stop/inject + 二进制帧通道)
+  → yohu-app commands 薄转发
+  → yohu-mirror::MirrorService     # 新 crate，对标 yohu-logsrv CaptureService
+        槽位 Empty/Starting/Live/Stopping，generation 必达
+        pin 的 scrcpy-server 版本 ↔ 帧头解析器版本 同一常量
+  → yohu-adb  push / reverse|forward / app_process 长驻
+        （第三种进程：活着 + TCP，不是 run_streaming 泵 stdout）
+  → 设备 官方 scrcpy-server（Java，app_process）
+```
+
+| 决策 | 采用 | 来源 | 不采用 |
+|------|------|------|--------|
+| 设备编码器 | 官方 server jar，版本锁死 | scrcpy `server.c` / `develop.md` | fork `1.19-ws8`（ws-scrcpy） |
+| 隧道 | reverse 优先，失败改 forward + dummy byte | scrcpy + ya-webadb `AdbScrcpyClient.start` | 设备上听 8886 WebSocket |
+| 解码位置 | UI `VideoDecoder`（WebCodecs） | ya-webadb decoder | core FFmpeg 再塞像素进 WebView；SDL 窗 |
+| 视频 IPC | 独立二进制通道，禁走 log 批量事件 | ws-scrcpy 的「必须有二进制路」 | MSE 封 MP4、WASM Broadway |
+| 会话模型 | 每 serial 一路，掉线停槽 | 对齐 ADR-v6-016 / CaptureService | 每台再开 Tauri/Qt 窗口（QtScrcpy VideoForm） |
+| 控制 | v1 可关整条 control socket（只读） | scrcpy `--no-control` | UI 里吞点击但 socket 仍开 |
+| ADB | 现有 sidecar | ADR-v6-008 | `@yume-chan/adb` / WebUSB |
+
+**Yohu 投屏显示功能清单（调研导出，供架构设计引用）**
+
+P0 基线（模块从 Planned 转正式，源码闭环）：
+
+1. `selectionMode=singleRequired`，页眉显示选中设备；无在线设备空态。
+2. 启停投屏：core 槽位 + 任务中心登记；退出序列 3s 强杀进程树。
+3. 画面嵌在模块 `YoPanel`：保持设备宽高比、适应面板（fit ≠ 改 `max_size`）。
+4. 状态：未开始 / 启动中 / 直播 / 失败（带 server stdout）/ 设备掉线已停止。
+5. 只视频、默认只读（`audio=false`，可关 control）。
+6. 质量：`max_size` + `video_bit_rate`（设置或页眉，下次 start 生效）。
+7. 截图：当前帧 canvas → 保存对话框（对标 QtScrcpy ToolForm / ya-webadb snapshot）。
+8. sidecar：pin 官方 `scrcpy-server` 与解析器同版本；cleanup 删设备 jar。
+
+P1 控制与产测常用：
+
+9. 触控点击/滑动（坐标映射到设备像素）。
+10. 导航键：Home / Back / App switch / Power / 音量。
+11. 熄屏保持镜像、点亮屏幕。
+12. 只读开关（关 control socket，不是忽略指针）。
+13. 面板内全屏（F11 作用域在投屏页）。
+14. 暂停画面（冻解码；采集是否停由产品定，默认对齐日志：冻 UI）。
+15. reverse 失败时「强制 forward」可观察开关。
+
+P2 远期：
+
+16. 音频转发（Android 11+）。
+17. 编码包 mux 录屏（MP4/MKV，解码前分流，对标 scrcpy recorder）。
+18. 多设备并行投屏。
+19. 剪贴板双向同步。
+20. HID 键鼠、摄像头源、虚拟显示、OTG、游戏键位、撕出独立 OS 窗口。
+
+明确不做：
+
+- 拉起 `scrcpy.exe` / QtScrcpy 当模块。
+- 重实现 ADB 协议或改 fork `scrcpy-server`。
+- JPEG `screencap` 轮询。
+- 投屏页再做 shell / 文件管理 / APK 安装。
+- 视频帧走 logcat 风格逐行 invoke。
+- MES。
+
+官方 Android 文档管的是 `MediaCodec` / `Surface`（server 已用），没有「桌面投屏工作台」交互规范。产品对标 scrcpy 能力表 + QtScrcpy 工具条；视觉仍走 Yohu / 鸿蒙 PC token。
+
 ## 对本知识库规则的候选修订
 
 只记录建议，不自动改 `instructions/rules/`。
@@ -110,6 +183,7 @@ OLE 胶水留在 `yohu-app`；传输/安全根仍在 `yohu-files`。UI 只做命
 - windows-desktop 类型包可补：模块快捷键默认 `panel.contains(focus) && !isEditable`；Ctrl+A 在 listbox 上选模型，禁止整页 `selectAll`。
 - 实现配方引用本层四篇，不要再从「AS 风格」口头对标跳过作用域。
 - windows-desktop 类型包可补：WebView 拖入走壳 `CF_HDROP` 路径事件 + 命中测试，禁止当主路径用 HTML5 `DataTransfer.files`；拖出非本机文件必须 `FILEDESCRIPTOR`/`FILECONTENTS`，禁止先物化成 `CF_HDROP`。默认 Copy。OLE 不进 UI 层。
+- windows-desktop 类型包可补：工作台投屏自写客户端（官方 scrcpy-server + core 隧道/帧头 + UI WebCodecs）；禁止以 `scrcpy.exe` 黑盒窗口代替模块；视频用独立二进制通道，不走 log 批量 IPC；禁止 fork server。
 
 ## 入选与落选备忘
 
@@ -127,6 +201,13 @@ OLE 胶水留在 `yohu-app`；传输/安全根仍在 `yohu-files`。UI 只做命
 - wry：Yohu 运行时的拖入实现，解释为什么 HTML5 drop 在 Windows 上不可用。
 - drag-rs：Tauri 拖出 API 形状；用「只认本机路径」说明不能当 Android 方案。
 
+**入选（投屏 4）**
+
+- scrcpy：协议、隧道、只读、版本锁；`server.c` 是客户端编排蓝本。
+- ya-webadb：协议/ADB/解码分家；WebCodecs 渲染；reverse 失败切 forward。
+- QtScrcpy：工作台按钮与启动参数清单；反例是独立原生窗 + FFmpeg。
+- ws-scrcpy：WebView 必须有二进制视频通道；反例是 fork server、PATH adb、模块耦死。
+
 **落选**
 
 - `klogg`：Qt C++ 大文件查看器，选区模型不可搬到 Solid 虚拟列表。
@@ -134,7 +215,9 @@ OLE 胶水留在 `yohu-app`；传输/安全根仍在 `yohu-files`。UI 只做命
 - `intellij-community`：动作总线与 AS logcat 重复，体量过大。
 - `logdyhq/logdy-core`：暂停/环已在架构引用；面板键位在 UI 仓。
 - `facebook/flipper` Logs：产品形态不同，维护弱于上述四份。
-- `barry-ran/QtScrcpy`：拖入是 scrcpy 同构，无拖出。
+- `barry-ran/QtScrcpy`：拖入主题下落选（与 scrcpy 同构）；**投屏主题已入选**（见上）。
+- `Creeeeeeeeeeper/rust-ws-scrcpy`：Rust+WS 同构 ws-scrcpy，15 star，锁死单一 server 小版本。
+- `bilbospocketses/ws-scrcpy-web`：ws-scrcpy 后继，生态不如 NetrisTV 原仓稳定，作对照不入库。
 - `ganeshrvel/openmtp`：macOS + MTP，不是 Windows ADB。
 - `T0biasCZe/AdbFileManager`：WinForms 按钮拷贝，无 OLE。
 - `gerosyab/ADBCopy`：双栏 + Explorer 拖入，虚拟文件深度不及 ADB-Explorer。
