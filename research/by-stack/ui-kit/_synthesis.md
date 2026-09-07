@@ -37,6 +37,12 @@ stack:
 | [Spectrum Table](adobe--react-spectrum.md) | resizer::after 画列界；排序图标未激活不占位 | reuse-pattern：文本区裁剪 |
 | [VS Code 表格 sash](microsoft--vscode-table.md) | SplitView 做列轨道，标题只是 sash 格子里的文案 | reuse-pattern：区域划分 ≠ 文本 |
 | [HarmonyOS 静态/动态模糊样本](HarmonyOS_Samples--FuzzySceneOptimization.md) | 转场前一次性 createEffect；动画帧上 blur 会掉帧 | reuse-pattern：先有板再开弹簧 |
+| [iOS 26 Liquid Glass](apple--liquid-glass.md) | 导航层超材料：lensing、Regular/Clear、容器共享采样、物化调透镜 | adapt 契约；anti-pattern：内容层玻璃、玻璃叠玻璃、alpha 进出场 |
+| [QWEA0 Liquid-Glass-Android](QWEA0--Liquid-Glass-Android.md) | View 系 SDF 透镜 + Regular/Clear + 独立 ScrollEdge | adapt 变体与捕获排除；anti-pattern：色散/重力默认开 |
+| [Abdullajon1881 LiquidGlass](Abdullajon1881--LiquidGlass.md) | GlassEffectContainer 对应：共享 recorder + smin 并集 | reuse-pattern：一 host 多 consumer；anti-pattern：触点写进透镜 |
+| [BarredEwe LiquidGlass](BarredEwe--LiquidGlass.md) | iOS Metal 截图层复现 | anti-pattern：`layer.render` 当 L0 |
+| [Android 玻璃数据链路](android--liquid-glass-data-path.md) | QWEA0 pull / Abdullajon push / Kyant layer / Yo Host 六跳对照 | reuse-pattern：Host 推一次；anti-pattern：每板整树 Capture、chainEffect |
+| [Kyant0 AndroidLiquidGlass](Kyant0--AndroidLiquidGlass.md) | Compose：一份内容 GraphicsLayer + 玻璃 RenderEffect | adapt 铬与透镜分权 |
 
 ## 共同架构经验
 
@@ -99,6 +105,9 @@ stack:
 - content-region 可补一句：表头轨道是铬，标题/排序是内容区；`.yohu-interactive` 不得铺满轨道来假装列界。
 - 底部页签动效：切页默认 0；选中 bounce 是图标 translationY DOWN，禁止整栏 scale；栏显隐用 stiffness 228 / damping 30，不要 `LOCAL` 贝塞尔。
 - 半模态：SIDE 无档位/控制条且高度全屏；同面板 push 只换内容，关闭按钮关掉整棵栈；层级返回不得覆盖用户 leading。
+- ui-kit layering 可补：液态玻璃背景是 L1 共享能力；容器共享采样。
+- 禁止 `api/` 出现 `UIGlassEffect` / `GlassEffectContainer` 类型名；对外用 Yo 变体枚举。
+- Reduce Transparency / 高对比必须改材料层（更霜或实色），禁止只改前景字色。
 
 已升格（2026-08-20，用户确认）：圆角几何进 L1；L5 门面要薄、禁止 `api/` import `internal`；组件禁止私自 `addRoundRect` / `GradientDrawable.setCornerRadius`；玻璃 / SDF 锁定 CIRCULAR。见 `instructions/rules/by-type/ui-kit/` 的 public-api / layering / file-srp / coupling。
 
@@ -117,3 +126,22 @@ Dialog 空间弹出（2026-08-20）：入选 `arkui_ace_engine` `PlayDistortion`
 Dialog 弹出扫光形态（2026-08-21）：补读 `UpdateEdgeLightFilter` 的 Dialog 分支（inner 0.1 / outer **0**）和 FrameGradientMask `AxialCoreWidth=0.3`。HDS `DualEdgeFlowLight` 是周长光线，产品不同，不单列作 Dialog L7 实现仓。落选把 `thickness=250` 当 Canvas stroke 的社区扫光 Demo。
 
 Dialog 扫光看不见（2026-08-21）：同一主题补读 `GESDFEdgeLight::MakeImageMerger` 与 OverlayNG。入选仍是 ace_engine + graphics_effect + graphic_2d，不另开仓。根因是 YoUI L7 sibling overlay 丢了加色，不是再调粗细。
+
+### iOS Liquid Glass 与背景模块（2026-09-04 增补）
+
+- **玻璃是导航层材料，不是模糊参数袋。** Regular 自适应；Clear 固定更透且必须压暗。同簇禁止混变体。小件可 light↔dark；MENU/DIALOG 大板只调 tint。
+- **Lensing 是主定义，frost 是厚度。** 物化/消物化调透镜带宽，禁止 alpha 冒充 `UIVisualEffectView.effect`。
+- **容器拥有采样权。** 玻璃不能采样玻璃；多板 = 一张 backdrop + 场景 SDF（smin）+ 统一 luminance。`spacing` 是开始融化的距离。子板只贡献形状。
+- **Scroll edge 是邻层。** 弱/强模糊渐变带或 hard scrim，不进透镜 pass。
+- **Android 开源只提供手段。** QWEA0 / Abdullajon 的 SDF、捕获排除、smin、独立 edge view 可 adapt。色散、重力传感器、Compose/RN 壳、`layer.render` 截图不进 Yo。
+- **与鸿蒙沉浸光感并存时的分工：** 鸿蒙 LUT/角色编译（`YoImmersiveLight.Role`）仍是产品入口；iOS 补的是背景光学契约（变体、容器、尺寸厚度、物化、edge）。不要第二套控件树。
+
+### Android 数据链路（2026-09-04 源码）
+
+- **H1 必须 push 且共享。** Abdullajon `Provider.dispatchDraw` 录一次、Kyant 一份 `GraphicsLayer`、Yo `BackdropHost` 已是这条。QWEA0 每块 `BackdropCapture.draw` 整棵 source 是 Dialog 未入树的 pull 后备，不能当 BAR 热路径。
+- **排除玻璃靠树或注册表，不靠 `View.draw` 标志。** 硬件 `dispatchDraw` 不进 `View.draw`；QWEA0 自己注释 `isCapturingBackdrop` 拦不住，改 `TRANSITION_VISIBILITY`。Yo `OverlayExclusion.hideInside` 同解。
+- **H3/H4 在 Motorola 上分 RenderNode，不 `createChainEffect`。** QWEA0/Abdullajon/Kyant 都链；Yo 已拆 sample→blur→body→lens。
+- **折射只向内。** 四套 AGSL 都是 `-n`；向外读子输入越界是透明黑。margin 只给模糊。
+- **多板融化是同一 H4 的 SDF 并集。** Abdullajon View 路径 `merge=0`；Compose 才 pack 最多 8 形。并排多个 `YoBlur` 不会融化。
+
+Liquid Glass（2026-09-04）：规范读 WWDC 219/284 + UIKit JSON。实现读 QWEA0、Abdullajon、Kyant0 源码链路。BarredEwe 作 L0 反例。落选 Enie（O(r²) 找边）、PrismalAGSL / KMPLiquidGlass（与 Kyant/View 重复）、destefanis 条纹液体、conorluddy 纯目录。
