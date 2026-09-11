@@ -17,6 +17,7 @@ stack:
 | [microsoft/vscode 选区](microsoft--vscode-selection.md) | 编辑器选区是模型 (line, column)；复制 `getValueInRange` | reuse-pattern |
 | [JetBrains/android logcat](JetBrains--android.md) | 快捷键绑在日志宿主；过滤栏与编辑器分焦点；复制结构化消息 | reuse-pattern / adapt |
 | [JetBrains/android 文档选区](JetBrains--android-selection.md) | Logcat 字段是 Document span，不是表格格 | reuse-pattern |
+| [AS Logcat V2 色板](../ui-kit/JetBrains--android-logcat-colors.md) | 色板在 ui-kit；Assert 更深红 | reuse-pattern |
 | [Chrome DevTools Console](ChromeDevTools--devtools-frontend.md) | 虚拟视口自管 `{item,offset}`；复制拼模型行 | reuse-pattern |
 | [logdyhq/logdy-ui](logdyhq--logdy-ui.md) | Space 暂停；INPUT 放行；但 document 级监听不可搬到工作台 | reuse-pattern / anti-pattern |
 | [amir20/dozzle](amir20--dozzle.md) | 壳 Ctrl+K vs 面板 Ctrl+F；复制走模型不是 DOM 选区 | reuse-pattern |
@@ -42,8 +43,32 @@ stack:
 | [wry 子 HWND 显隐](tauri-apps--wry-child-visible.md) | `ShowWindow` + `SetIsVisible` 成对；Destroy 只在 Drop | reuse-pattern / anti-pattern |
 | [mpv-examples 嵌入槽](mpv-player--mpv-examples.md) | 宿主原生槽 + wid 子窗；CSS 管不着嵌入表面 | reuse-pattern / anti-pattern |
 | [投屏交换链铬](desktop--mirror-swapchain-chrome.md) | 空态/暂停必须持续 Present；DComp clip 裁位图边，dirty 一次画会丢描边 | reuse-pattern / anti-pattern |
+| [PacketSender 面板脚本](dannagle--PacketSender.md) | 命名按钮存多行脚本；`delay:秒` 是脚本行；开跑前整段校验 | reuse-pattern / anti-pattern |
+| [android-simple-adb 脚本](Alexs784--android-simple-adb.md) | ADB Script=有序 Step；sleep 被做成主机命令；失败重试写死 2s | reuse-pattern / anti-pattern |
+| [Bruno Collection Runner](usebruno--bruno.md) | 间隔是本次 Run 参数；睡眠可取消；实现却 before-each（含第一发） | reuse-pattern / anti-pattern |
+| [Lazy Blacktea 命令库](leaf76--lazy_blacktea_rust.md) | 同栈 Tauri 命令库仍是单行字符串 + tags/risk | lesson-only / anti-pattern |
 
 ## 共同架构经验
+
+### 命令块 / 序列间隔（2026-09-11）
+
+Yohu 要在「新增的命令」里编辑命令块：自动顺序执行多条 ADB 行，并选择间隔。四份源码把「等一会儿」放在三个不同位置：
+
+| 放哪 | 代表 | 适合 | Yohu |
+|------|------|------|------|
+| 脚本里的一行（`delay:N` / `sleep` 步） | PacketSender；android-simple-adb | 灵活、可每步不同 | **不采用**：会变成第三种行类型，混进 `>>>` |
+| 这一次 Run 的参数 | Bruno `--delay` | 探索、限流 | **不采用**：产线预设必须可复现，间隔跟命令一起落盘 |
+| 条目上的一个字段 | （四份都没做成这样） | 一键复现 | **采用**：块级 `gap_ms`，常量集里选 |
+
+共同该搬的机制：
+
+1. **可执行单位是叶子，不是文件夹。** android-simple-adb 的 Script 才是跑的对象；PacketSender 的按钮也是。Yohu 的组继续只当目录（现状树点击组也不跑 `group.run`）。
+2. **开跑前整段校验。** PacketSender 未知包/非法 delay 直接不跑。Yohu 空步、非法 gap、占位符未填在 domain 拒。
+3. **睡眠可取消。** 只抄 Bruno 的 `race(sleep, abort)`，用已有 `CancellationToken`。禁止 PacketSender `QThread::sleep`、android-simple-adb 按钮回调里 `time.sleep`。
+4. **间隔发生在步与步之间。** 不要抄 Bruno 源码的 before-each（第一发前也等）。最后一步后面不等。
+5. **一步一行用户可见的 template。** 不要抄 android-simple-adb「一步藏 dump/pull/tap 三条」。不要抄失败重试。
+
+明确不做：成功/失败正则、失败中断、tags/risk、`delay:` DSL、store 里 `setTimeout` 编排、把间隔加到 CommandGroup。
 
 ### 交换链主人与 DComp clip（2026-09-11）
 
@@ -328,8 +353,24 @@ F 第三方 APK       MediaProjection + 无障碍。另一个产品
 - windows-desktop 类型包可补：窗口 presence（启动交接、占用过渡）只动画合成器属性（DComp / 分层 HWND 冻结位图的 scale·opacity）。禁止每帧 `SetWindowPos` 改 HWND 宽高。主窗布局一次落到最终矩形。同屏共享容器；异屏淡入淡出，禁止跨屏共享几何。
 - windows-desktop 类型包可补：设备 HCI 是独立二进制流（btsnoop），不是 logcat。实时分套接字档与 root 文件档，先探测再开采；无能力时只提供 bugreport 快照。运输走 sidecar adb，禁止自讲 ADB 协议。HCI 路径不进 SafetyRoot。
 - windows-desktop 类型包可补：无线 ADB 是运输，不是新模块。优先 USB 一次 `adb tcpip`（不开「无线调试」开关）；Android 11+ 配对走 sidecar `adb pair`/`connect`/`mdns`，禁止重实现 TLS。`tcp:` 默认 forward。禁止把厂商管家或 Miracast 接到 scrcpy 槽。
+- windows-desktop 类型包可补：命令库叶子可以是多步块；间隔是条目字段（常量集），不是脚本行、不是本次 Run 参数。睡眠在 domain 且可取消。禁止 UI `setTimeout` 编排，禁止 sleep 步进 IO 流。
 
 ## 入选与落选备忘
+
+**入选（命令块 / 序列间隔 4，2026-09-11）**
+
+- PacketSender：面板脚本 + 间隔落在序列上 + 预校验；反例是 `delay:` DSL 与不可取消 sleep。
+- android-simple-adb：ADB 脚本是一等对象、步骤可重排；反例是 sleep 步与失败重试。
+- Bruno：可取消的单一间隔、Run 与条目分离——Yohu 只借前者，间隔仍要落盘。
+- Lazy Blacktea：同栈对照；证明单行 `command: String` 撑不住块，且不要把 tags/risk 加回来。
+
+**落选（命令块）**
+
+- Ghost in the Droid / hah23255/adb-android-control / mobile-dev-inc/maestro：UI 宏（tap/swipe/wait），不是命令库。
+- HiyokoADB：博客写了 sequence runner，无稳定公开仓可 clone。
+- ImKKingshuk/Rust-ADB：batch + 条件分支，直接撞 ADR-v6-009。
+- SysAdminDoc/Droidsmith：debloat pack，不是终端命令块。
+- 把间隔并进已有 QtScrcpy / scrcpy 篇：那些是投屏，不是命令库。
 
 **入选（HWND / WebView 叠层生命周期，2026-09-11）**
 
