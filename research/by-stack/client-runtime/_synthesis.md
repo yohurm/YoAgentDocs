@@ -41,8 +41,19 @@ stack:
 | [WebView2Samples 可见性](MicrosoftEdge--WebView2Samples.md) | `put_IsVisible` 在宿主 controller；窗口化 HWND 遮挡、不挖洞 | reuse-pattern / anti-pattern |
 | [wry 子 HWND 显隐](tauri-apps--wry-child-visible.md) | `ShowWindow` + `SetIsVisible` 成对；Destroy 只在 Drop | reuse-pattern / anti-pattern |
 | [mpv-examples 嵌入槽](mpv-player--mpv-examples.md) | 宿主原生槽 + wid 子窗；CSS 管不着嵌入表面 | reuse-pattern / anti-pattern |
+| [投屏交换链铬](desktop--mirror-swapchain-chrome.md) | 空态/暂停必须持续 Present；DComp clip 裁位图边，dirty 一次画会丢描边 | reuse-pattern / anti-pattern |
 
 ## 共同架构经验
+
+### 交换链主人与 DComp clip（2026-09-11）
+
+scrcpy 每帧 Clear+Present，libmpv 要叠 OSD 必须走 Render 每帧画，DirectComposition 的 Clip 裁的是 visual 位图：
+
+1. **谁拥有回缓冲，谁每拍画完再 Present。** 空态不是 overlay，不能 dirty 画一次就停。
+2. **clip 动画在合成器上。** CPU 描边在动画期跳过是对的；动画结束后同一条铬路径必须还能走进来。
+3. **改 ARGB / 加井底盖不住所有权。** 开始→停止后边框消失，是 contain→fill 动画吃掉唯一一次 hairline。
+
+详见 [投屏交换链铬](desktop--mirror-swapchain-chrome.md)。
 
 ### 原生嵌入表面的显隐（2026-09-11）
 
