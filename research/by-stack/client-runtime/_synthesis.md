@@ -38,8 +38,23 @@ stack:
 | [LineageOS adb Wifi](LineageOS--android_packages_modules_adb.md) | TLS 口 + 配对 + 遗产 `tcpip:`；只调 sidecar | reuse-pattern / anti-pattern |
 | [bk138/droidVNC-NG](bk138--droidVNC-NG.md) | 无 ADB 投屏要装包+录屏+无障碍；不当主路径 | lesson-only / anti-pattern |
 | [Yohu 双应用 1420 撞车](yohu--desktop-dev-port-collision.md) | 两套 Tauri 共用 `devUrl:1420`；壳身份 ≠ 端口上的前端 | anti-pattern / lesson-only |
+| [WebView2Samples 可见性](MicrosoftEdge--WebView2Samples.md) | `put_IsVisible` 在宿主 controller；窗口化 HWND 遮挡、不挖洞 | reuse-pattern / anti-pattern |
+| [wry 子 HWND 显隐](tauri-apps--wry-child-visible.md) | `ShowWindow` + `SetIsVisible` 成对；Destroy 只在 Drop | reuse-pattern / anti-pattern |
+| [mpv-examples 嵌入槽](mpv-player--mpv-examples.md) | 宿主原生槽 + wid 子窗；CSS 管不着嵌入表面 | reuse-pattern / anti-pattern |
 
 ## 共同架构经验
+
+### 原生嵌入表面的显隐（2026-09-11）
+
+WebView2 官方样本、wry、libmpv 嵌入示例说的是同一件事：
+
+1. **开关在宿主对象**（controller / `set_visible` / 槽 HWND），不在页面 CSS、Presence、`opacity`。
+2. **窗口化 WebView2 与 `WS_CHILD` 视频窗是两个 HWND。** 拆视频窗不会把 WebView 洞补回来（ADR-v6-026）；页面淡出也藏不住视频窗。
+3. **拆窗只在宿主对象释放或明确 shutdown**，不在 View HMR / 淡出观察者。
+
+Yohu 投屏应：`@yohu/workbench` 在 `ModuleId.Mirror` 身份变化时 `mirror.present.setActive`；`MirrorView` 只报 avail 几何。不要用 `closest('.yohu-presence')` 或 layout `epoch` 补丁挡在途包。
+
+Electron `WebContentsView.setVisible` 是同一模式（壳进程改 View），仓库太大未整仓克隆，只作对照，不单列深研。
 
 ### 多应用共用 devUrl（2026-09-10）
 
@@ -304,6 +319,20 @@ F 第三方 APK       MediaProjection + 无障碍。另一个产品
 - windows-desktop 类型包可补：无线 ADB 是运输，不是新模块。优先 USB 一次 `adb tcpip`（不开「无线调试」开关）；Android 11+ 配对走 sidecar `adb pair`/`connect`/`mdns`，禁止重实现 TLS。`tcp:` 默认 forward。禁止把厂商管家或 Miracast 接到 scrcpy 槽。
 
 ## 入选与落选备忘
+
+**入选（HWND / WebView 叠层生命周期，2026-09-11）**
+
+- MicrosoftEdge/WebView2Samples：官方 `put_IsVisible` 与 Visual 宿主。
+- tauri-apps/wry：Yohu 实际用的子 HWND 显隐。
+- mpv-player/mpv-examples：宿主槽拥有嵌入视频窗。
+
+**落选（叠层生命周期）**
+
+- electron/electron 整仓：体积过大；`WebContentsView.setVisible` 已由文档对照，不重复克隆。
+- 4gray/iptvnator：有 Electron+mpv wid 文档，但是播放器产品，结论已被 mpv-examples 覆盖。
+- 把 WebView2 改成 Visual 宿主以叠投屏：要重做 wry 输入；不是本轮边界。
+
+## 入选与落选备忘（既有）
 
 **入选（快捷键 4）**
 
