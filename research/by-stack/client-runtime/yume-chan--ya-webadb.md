@@ -19,6 +19,7 @@ related:
   - research.synthesis.client-runtime
   - research.Genymobile-scrcpy
   - research.NetrisTV-ws-scrcpy
+  - research.android-wireless-connect-paths
 ---
 
 # yume-chan/ya-webadb
@@ -84,3 +85,7 @@ Tango：浏览器里的 ADB + scrcpy。产品是 tangoapp.dev；库是一套 MIT
 ## 阅读范围
 
 `libraries/adb-scrcpy/src/client.ts`、`connection.ts`、`libraries/scrcpy/src/index.ts`（版本表到 4_1）、`libraries/scrcpy-decoder-webcodecs/src/video/decoder.ts`、`render/` 目录、`utils/snapshot.ts`。未读音频播放器与 HID 全量。
+
+### 无线命令（2026-09-10）
+
+补读 `libraries/adb/src/server/commands/wireless.ts`、`m-dns.ts`、`service/tcpip.ts`。`WirelessCommands` 只向 **官方 adb server** 发 `host:pair` / `host:connect` / `host:disconnect`，并区分 already-connected / unauthorized / network。`AdbTcpIpService` 按 `listen_addrs` → `service.adb.tcp.port` → `persist.adb.tcp.port` 读遗产监听。作者明确：浏览器 WebUSB 路径 **不做** Android 11+ TLS 配对。Yohu 应对齐「封装 sidecar」，不要抄 `@yume-chan/adb` 的 daemon 实现。详见 [无线连接主题](android--wireless-connect-paths.md)。

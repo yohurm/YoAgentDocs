@@ -20,6 +20,7 @@ related:
   - research.yume-chan-ya-webadb
   - research.barry-ran-QtScrcpy
   - research.NetrisTV-ws-scrcpy
+  - research.android-wireless-connect-paths
 ---
 
 # Genymobile/scrcpy
@@ -99,3 +100,7 @@ adb shell CLASSPATH=... app_process / com.genymobile.scrcpy.Server <version> key
 本轮：`doc/develop.md`（连接/协议/帧头）、`doc/video.md`、`doc/control.md`、`doc/window.md`、`doc/shortcuts.md`、`README.md` 功能列表、`server/src/main/java/com/genymobile/scrcpy/video/SurfaceEncoder.java` 目录与 `ScreenCapture.java` 存在性。未读 OTG/HID/摄像头/V4L2 实现细节。
 
 先前：`app/src/file_pusher.c`、`input_manager.c`、`adb/adb.c`、`doc/control.md` File drop、`cli.c` `--push-target`。
+
+### 无线 TCP/IP（2026-09-10）
+
+补读 `doc/connection.md`、`app/src/server.c`（`sc_server_switch_to_tcpip` / `connect_to_tcpip`）、`adb_parser.c`（`ip route` 只收 `wlan*`）、`adb_tunnel.c`（`adb connect` 上 reverse 失败则 forward）。这是 **不开「无线调试」** 也能无线投屏的官方客户端做法：USB 一次 `adb tcpip 5555`，不是 Android 11 配对。Yohu 缺的是这套向导，不是另一套编码器。详见 [无线连接主题](android--wireless-connect-paths.md)。
