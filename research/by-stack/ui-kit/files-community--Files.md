@@ -64,4 +64,4 @@ Windows 上最完整的开源 WinUI 3 工作台之一。主窗口把 **标题铬
 
 ## 阅读范围
 
-`src/Files.App/Views/MainPage.xaml`、`UserControls/NavigationToolbar.xaml`（高 48、三列：导航 / Omnibar / 右侧动作）、`Views/Shells/ModernShellPage.xaml` 中 StatusBar。未读完整 ViewModel。
+`src/Files.App/Views/MainPage.xaml`、`UserControls/NavigationToolbar.xaml`（高 48、三列：导航 / Omnibar / 右侧动作）、`Views/Shells/ModernShellPage.xaml` 中 StatusBar。2026-09-11 增补：`Files.App.Controls/Omnibar/{Omnibar.xaml,Omnibar.cs,Omnibar.Events.cs}`——整条是带边框 TextBox 铬；`GotFocus` 主动 `SelectAll`（Yohu 不要抄）；建议选中后 `Select(length, 0)` 光标在末尾；模式钮热区固定 46px。未读完整 ViewModel。

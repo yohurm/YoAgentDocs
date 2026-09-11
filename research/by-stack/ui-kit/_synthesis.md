@@ -15,6 +15,7 @@ stack:
 |-------------|--------|----------|
 | [工作台命令带分区](desktop--workbench-command-band.md) | 标题铬与 Command band 分权；空态安静；文档命令留在画布 | reuse-pattern：URL 不下 caption 行 |
 | [files-community/Files](files-community--Files.md) | Tab / 地址栏 48px / Inner Toolbar / 侧栏 / 状态栏 | reuse-pattern：地址栏独立行 |
+| [地址栏展开铬/全选/收回](desktop--address-edit-focus.md) | 铬=可见盒；Chromium mouseup 全选；Files 主动 SelectAll | reuse-pattern：pointerup 后 focus；anti-pattern：槽 stretch 当路径栏 |
 | [CommunityToolkit/Windows SettingsCard](CommunityToolkit--Windows.md) | 设置行四列 Auto/*/Auto/Auto；Content 右对齐 hug | reuse-pattern：右槽不 stretch |
 | [桌面设置行右槽簇](desktop--settings-form-row.md) | 路径+浏览同一簇贴尾；stretch+max-width 会空档居中 | anti-pattern：controlFill / Tooltip block |
 | [microsoft/WinUI-Gallery](microsoft--WinUI-Gallery.md) | TitleBar 与 NavigationView 分两行；页面命令在 Frame | adapt：返回留标题栏；URL 不抄进 Content |
