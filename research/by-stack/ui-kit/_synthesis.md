@@ -61,6 +61,13 @@ stack:
 | [arco-design/arco-design](arco-design--arco-design.md) | Less token → CSS 变量写 body；仓内 Trigger | reuse-pattern：热更新只改 `--*`；adapt：Trigger 单原语；anti-pattern：写 body、lighten、测盒循环 |
 | [shopify/polaris](shopify--polaris.md) | token 元数据 + stylelint 禁 hex；React 包已归档 | adapt：lint 只许 `--yohu-*`；anti-pattern：抄 Shopify 皮肤（许可限制） |
 | [primer/react](primer--react.md) | 开发者工具：ActionList + AnchoredOverlay；token 已是 CSS 变量 | reuse-pattern：菜单 Host/List 分权；adapt：复合槽与关闭手势；anti-pattern：写死 200ms、引进 Primer |
+| [primer/primitives](primer--primitives.md) | 深色 default 抬到 `#0D1117`；dimmed 是偏好板 | reuse-pattern：功能名共享、深色躲开 black；anti-pattern：抄 Primer hex / 第三主题 |
+| [radix-ui/colors](radix-ui--colors.md) | 12 步手调双表；深色灰 2/3/5 ≈ 鸿蒙三级表面 | reuse-pattern：步义固定 hex 分表；anti-pattern：引进 12 阶或 P3 |
+| [material-color-utilities](material-foundation--material-color-utilities.md) | M3 深色默认 surface tone 6，lowest 才可能 0 | lesson-only：抬离纯黑；anti-pattern：HCT / surfaceTint |
+| [桌面深色色板](desktop--dark-color-scheme.md) | 浅/深同构凹槽；画布 = `background_secondary` `#191A1C` | adapt：只改 Semantic 映射与壳 `CANVAS_DARK` |
+| [AOSP logcat -v color](android--logcat-v-color.md) | CLI：V 灰 D 蓝 I 绿 W 橙；Fatal===Error 同红 | reuse-pattern：五档色相；anti-pattern：抄 256 霓虹、Fatal 不加深 |
+| [AS Logcat V2 色板](JetBrains--android-logcat-colors.md) | 字母色块 + 消息另键；Assert 更深红不是紫 | reuse-pattern：Fatal 深于 Error；anti-pattern：社区紫、Tag 调色板 |
+| [pidcat](JakeWharton--pidcat.md) | 字母表 VDIWEF；徽章蓝绿黄红；Fatal 同 Error | reuse-pattern：徽章强调；anti-pattern：Tag LRU 换色 |
 
 ## 共同架构经验
 
@@ -152,6 +159,8 @@ stack:
 
 ## 入选与落选备忘
 
+日志级别色（2026-09-11）：入选 AOSP `colorFromPri`、AS V2 两份 ColorScheme、pidcat `TAGTYPES`。官方是灰/蓝/绿/橙/红；Fatal 在 CLI/pidcat 与 Error 同红，Studio V2 用更深红底。落选社区 Material 紫 Assert、Dozzle 把 debug 涂紫。Yohu 色相只派生鸿蒙 primitive，Fatal 用 warning 压黑。
+
 必读仓已浅克隆到 `%TEMP%/YoAgentResearch/`。霜玻璃 HIGH 着色器仍闭源；**点光源**在 `graphic_graphic_2d` 开源，已单列。HDS / UIDesignKit 无公开实现仓。
 
 圆角：规范读本地鸿蒙《圆角参数》+ Apple `CALayerCornerCurve`；实现读 Rosen RoundRect 与 figma-squircle。`stoyan-vuchev/squircle-shape` 单 cubic 落选。
@@ -240,4 +249,18 @@ Liquid Glass（2026-09-04）：规范读 WWDC 219/284 + UIKit JSON。实现读 Q
 - Fluent / Spectrum / Radix：已有动效/表头/Presence 切片，不整仓重研。
 - ant-design-vue / NG-ZORRO：同一设计语言的框架移植。
 - Meta Astryx：2026 Beta，不当前主参考。
-- `@primer/primitives` / `@ant-design/cssinjs` 独立仓：本轮结论已够，不另开篇。
+- `@ant-design/cssinjs` 独立仓：本轮结论已够，不另开篇。
+
+### 桌面深色色板（2026-09-11 增补）
+
+主题：重新校准 YoUI 深色画布。源码浅克隆 `primer/primitives`、`radix-ui/colors`、`material-color-utilities`；Fluent / Apple 只读官方规范。
+
+- **深色默认页不是 `#000`。** Primer `bgColor.default` 深色 override 到 `#0D1117`；Radix App 底是 gray1/2（`#111` / `#191919`）；M3 默认 surface 是 tone 6（lowest 才可能 tone 0）；Fluent Background1 是 `grey[16]`。手机 OLED 纯黑与桌面工作台不是同一产品。
+- **浅/深要同构凹槽。** 浅色画布早已是雪域灰不是白。深色应对称映射 `background_secondary` `#191A1C`，卡片仍 `comp_background_primary` `#202224`，次级仍 `background_fourth` `#2E3033`。`#191A1C` 只禁当 surface-2，不当画布是误读。
+- **色值仍锁鸿蒙表。** 抄的是「抬离纯黑」的映射，不是 Primer 蓝灰、Radix hex、HCT / `surfaceTint`。禁止第三主题 `dark-dimmed`。
+- **层级用明度 + hairline。** 鸿蒙 §1.6：深色投影变弱；正文 ≥5:1，谨慎 >17.6:1。白 90% 压在 `#000` 上接近刺眼区。
+- **壳画布必须同值。** `window_boot::CANVAS_DARK` 与 `--yohu-bg-base` 是一条链路。
+
+入选 3：`primer/primitives`、`radix-ui/colors`、`material-foundation/material-color-utilities`。主题笔记：[桌面深色色板](desktop--dark-color-scheme.md)。
+
+落选：MUI 动态配色、shadcn 模板、Fluent 本仓 tokens（工作树仍是 motion 切片）、VS Code `dark_plus`（clone 不完整）。上一轮「primitives 不另开篇」作废。
