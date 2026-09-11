@@ -13,6 +13,12 @@ stack:
 
 | 仓库 / 主题 | 一句话 | 利用方式 |
 |-------------|--------|----------|
+| [工作台命令带分区](desktop--workbench-command-band.md) | 标题铬与 Command band 分权；空态安静；文档命令留在画布 | reuse-pattern：URL 不下 caption 行 |
+| [files-community/Files](files-community--Files.md) | Tab / 地址栏 48px / Inner Toolbar / 侧栏 / 状态栏 | reuse-pattern：地址栏独立行 |
+| [CommunityToolkit/Windows SettingsCard](CommunityToolkit--Windows.md) | 设置行四列 Auto/*/Auto/Auto；Content 右对齐 hug | reuse-pattern：右槽不 stretch |
+| [桌面设置行右槽簇](desktop--settings-form-row.md) | 路径+浏览同一簇贴尾；stretch+max-width 会空档居中 | anti-pattern：controlFill / Tooltip block |
+| [microsoft/WinUI-Gallery](microsoft--WinUI-Gallery.md) | TitleBar 与 NavigationView 分两行；页面命令在 Frame | adapt：返回留标题栏；URL 不抄进 Content |
+| [WinUI 标题栏三键](desktop--winui-titlebar-chrome.md) | 46×满高直角 caption；关闭色例外；Tall 栏与工具钮分槽 | reuse-pattern：贴边满高；anti-pattern：padding 缩进三键 |
 | [openharmony/arkui_ace_engine（沉浸光感）](openharmony--arkui_ace_engine-immersive.md) | ImmersiveMaterial → 滤镜/着色器 → Rosen 节点 | adapt 档位短路与 LUT 接线 |
 | [arkui_ace_engine Dialog 空间弹出](openharmony--arkui_ace_engine-dialog-spatial.md) | API 26 Dialog：0.2 缩放+半高平移从中下散开；流光底→顶；关闭不回放 | adapt 打开映射；anti-pattern：360° sweep、关闭走旧 scale |
 | [HarmonyOS Dialog 弹出扫光](harmony--dialog-appear-flow-light.md) | 白光线贴 SDF 边扫；Dialog 外晕 0；250 是 bloom 不是 stroke | adapt 细帽+clip；anti-pattern：28dp 填色 |
@@ -34,6 +40,8 @@ stack:
 | [phamfoo/figma-squircle](phamfoo--figma-squircle.md) | 每角两 cubic + 一弧；邻角分账 | adapt 公式，不进 npm |
 | [racra smooth-corner](racra--smooth-corner-rect-android-compose.md) | s=0 走 RRect；胶囊回退 circular | reuse-pattern：曲线是策略不是 token |
 | [ag-grid 表头](ag-grid--ag-grid.md) | 轨道 / 标题 wrapper / resize 三节点 | reuse-pattern：分割线不进排序钮 |
+| [ag-grid 选区](ag-grid--ag-grid-selection.md) | 选字与选格互斥；跨格必须自管 Range | reuse-pattern / anti-pattern |
+| [日志清单文档选区](desktop--log-list-selection.md) | 指针 → 格 → 文档偏移 → 自画高亮 → 模型复制 | reuse-pattern |
 | [Spectrum Table](adobe--react-spectrum.md) | resizer::after 画列界；排序图标未激活不占位 | reuse-pattern：文本区裁剪 |
 | [VS Code 表格 sash](microsoft--vscode-table.md) | SplitView 做列轨道，标题只是 sash 格子里的文案 | reuse-pattern：区域划分 ≠ 文本 |
 | [HarmonyOS 静态/动态模糊样本](HarmonyOS_Samples--FuzzySceneOptimization.md) | 转场前一次性 createEffect；动画帧上 blur 会掉帧 | reuse-pattern：先有板再开弹簧 |
@@ -43,6 +51,15 @@ stack:
 | [BarredEwe LiquidGlass](BarredEwe--LiquidGlass.md) | iOS Metal 截图层复现 | anti-pattern：`layer.render` 当 L0 |
 | [Android 玻璃数据链路](android--liquid-glass-data-path.md) | QWEA0 pull / Abdullajon push / Kyant layer / Yo Host 六跳对照 | reuse-pattern：Host 推一次；anti-pattern：每板整树 Capture、chainEffect |
 | [Kyant0 AndroidLiquidGlass](Kyant0--AndroidLiquidGlass.md) | Compose：一份内容 GraphicsLayer + 玻璃 RenderEffect | adapt 铬与透镜分权 |
+| [HarmonyOS 动效体系](harmony--motion-system.md) | 时长/曲线/四类元素/共享容器；窗口动的是 Rosen 表面不是布局矩形 | reuse-pattern：合成器 Scale+Opacity；anti-pattern：HWND 尺寸插值 |
+| [Apple 动效体系](apple--motion-system.md) | HIG 可关可取消；CA 跑 transform；同屏 zoom；跨屏无共享几何 | reuse-pattern：主窗一次到位；anti-pattern：应用层 for 循环改 frame |
+| [nathangitter/fluid-interfaces](nathangitter--fluid-interfaces.md) | WWDC 2018：response/damping 弹簧；动 center/transform | adapt 参数换算；lesson-only：启动无手势 bounce |
+| [动效规格统一](harmony-apple--motion-spec-unification.md) | 鸿蒙时长表 + 四类曲线 + Apple 弹簧换算；双端 MotionSpec 同名 | reuse-pattern：产品只点规格名；anti-pattern：配方/原生再写平行毫秒表 |
+| [贴右横向开合](harmony-fluent--inline-end-clip.md) | Fluent `maxWidth`+overflow；WinUI compact 长度；CSS 只插同构轨道 | reuse-pattern：width 裁切贴 end；anti-pattern：`0fr auto`↔`minmax 1fr` |
+| [ant-design/ant-design](ant-design--ant-design.md) | Seed→Map→Alias + ConfigProvider + color×variant；cssinjs 默认 | reuse-pattern：三层派生；adapt：两轴按钮/内外缀/单 Host；anti-pattern：cssinjs、自造色板、Ant 动效 |
+| [arco-design/arco-design](arco-design--arco-design.md) | Less token → CSS 变量写 body；仓内 Trigger | reuse-pattern：热更新只改 `--*`；adapt：Trigger 单原语；anti-pattern：写 body、lighten、测盒循环 |
+| [shopify/polaris](shopify--polaris.md) | token 元数据 + stylelint 禁 hex；React 包已归档 | adapt：lint 只许 `--yohu-*`；anti-pattern：抄 Shopify 皮肤（许可限制） |
+| [primer/react](primer--react.md) | 开发者工具：ActionList + AnchoredOverlay；token 已是 CSS 变量 | reuse-pattern：菜单 Host/List 分权；adapt：复合槽与关闭手势；anti-pattern：写死 200ms、引进 Primer |
 
 ## 共同架构经验
 
@@ -63,6 +80,21 @@ stack:
 - 弹簧 stiffness 322 / damping 27 可换成 perceptual response；关闭官方不回放形变，YoUI 若回放打开语言，收回末帧仍须收到 alpha 0。
 - **关闭**在引擎里仍是旧缩放淡出。要对齐打开语言，visibility 必须 1→0 走同一映射。
 - 形变滤镜（四角塌陷/桶形）仅 HIGH 且闭源；Android 用 scale+translate 表达散开，不抄 DistortionParam。
+
+### 系统窗口动效 vs 控件动效（2026-09-08 增补）
+
+- **控件层**（YoUI CSS）继续 atom / 配方 / 接线；时长与标准/减速/加速曲线已对齐鸿蒙。
+- **窗口层**（启动交接、占用盒）必须走合成器属性（鸿蒙 `RSTransitionEffect` Scale+Opacity；Apple `CALayer` transform；Windows DComp / 分层 HWND 冻结位图）。禁止把 HWND/`NSWindow` 矩形当补间通道。
+- **同屏**用共享容器：启动快照的视觉矩形 morph 到主窗外框。**异屏**用电脑层级淡入淡出：小窗出场加速，主窗一次落到最终矩形再进场；不要跨显示器 matchedGeometry。
+- 鸿蒙 starting window：主窗布局已是终态，启动面 alpha 1→0 后从 leash 摘掉。Apple zoom 只适用于同一视觉连续性。
+- 落选：WinUIEx SplashScreen（关 splash 再 Activate 主窗，无合成器过渡）；整仓再克隆 `arkui_ace_engine`（已有 Tabs/Dialog 笔记，体积过大）；Lottie（内容动画，不是窗口 presence）。
+
+### MotionSpec 双端同名（2026-09-09 增补）
+
+- **一层规格名**（`effectsFast` / `spatialPanel` / …）。TS 产出 CSS `var(--yohu-motion-*)` 与 `motionSpecMs()`；Rust `yohu_motion::MotionSpec::duration_ms()` / `ease()` 给 DComp。禁止配方层、splash、占用盒再写平行毫秒表。
+- 时长锁鸿蒙《动效属性》100/150/160/200/300/350。窗口 `AnimationConfig` 默认 200ms + scale 0.7 只服务系统窗口，**不是**控件 token。
+- 曲线按进场减速 / 出场加速 / 持续标准。弹簧 128/12/1 只在 CSS `linear()`；原生弹簧槽位回退 standard，不在 DComp 再积分。
+- Apple `UISpringTimingParameters(damping:response:)` 与鸿蒙 interpolatingSpring 可换算；Reduce Motion 要把大位移换成淡入淡出（系统不会自动关掉自定义 animation）。
 
 ### 动效分层（2026-08-20 增补）
 
@@ -89,6 +121,12 @@ stack:
 - Fluent TableHeaderCell 的 button `width:100%` **不要抄**：它的 hover 是单元格矩形底，Yohu 排序走圆角 `.yohu-interactive`，铺满会把高亮片当成列区域，吃掉下一条分割线。
 - 鸿蒙 List：`header` 是 CustomBuilder（内容），`divider` 是 List 属性（铬，含 startMargin/endMargin）。同一条「内容 / 分割」分权。
 - 不把 YoDataGrid 整表提前落地；先补 `YoColHeader` 轨道原语，模块只提供排序文案。
+
+### 设置行右槽（2026-09-10 增补）
+
+- SettingsCard 根 Grid 是 `Auto | * | Auto | Auto`：标题吃剩余，Content 在 Auto 列且右对齐。鸿蒙设置项是 `Blank()` 把 extra 推到尾。
+- **右槽只有 hug 贴尾。** 路径+浏览是一簇，簇内只有 gap。把右槽 stretch 再给子级写死 max-width，中间必然空档，盒子看起来居中。
+- Files 设置页把开关/下拉直接放进 SettingsCard.Content。DevTools 路径+Browse 的 Width=* 是编辑表单，不是紧凑设置行。
 
 ## 分歧与取舍
 
@@ -145,3 +183,60 @@ Dialog 扫光看不见（2026-08-21）：同一主题补读 `GESDFEdgeLight::Mak
 - **多板融化是同一 H4 的 SDF 并集。** Abdullajon View 路径 `merge=0`；Compose 才 pack 最多 8 形。并排多个 `YoBlur` 不会融化。
 
 Liquid Glass（2026-09-04）：规范读 WWDC 219/284 + UIKit JSON。实现读 QWEA0、Abdullajon、Kyant0 源码链路。BarredEwe 作 L0 反例。落选 Enie（O(r²) 找边）、PrismalAGSL / KMPLiquidGlass（与 Kyant/View 重复）、destefanis 条纹液体、conorluddy 纯目录。
+
+窗口 / 启动动效（2026-09-08）：规范读本地鸿蒙《动效》五章 + Apple HIG Motion / WWDC 2018·2023·2024。实现入选 `openharmony/window_window_manager`、`microsoft/Windows.UI.Composition-Win32-Samples`、`nathangitter/fluid-interfaces`、`lwouis/alt-tab-macos`。落选 WinUIEx splash（无 morph）、JetBrains SplashManager（仓过大）、`arkui_ace_engine` 整仓再克隆。
+
+贴右横向开合（2026-09-09）：Fluent Collapse 横向走测宽后的 `maxWidth` + `overflowX`，闭合可用 compact `outSize`；WinUI SplitView 同一 pane 变宽。CSS Grid 只插**同构轨道**。Yohu 发送栏应对齐 `YoSwap`/`rail` 的 width 裁切，禁止 `0fr auto`↔`minmax(0,1fr) 0fr`。
+
+### 日志清单文档选区（2026-09-10 增补）
+
+- **选字与选格互斥。** AG Grid 默认 `user-select: none` + 模型 Range；`enableCellTextSelection` 只保证格内，并关掉网格 clipboard。跨格选字不能靠浏览器。
+- **日志是 Family A 文档。** AS Logcat 字段是 `Document` span；VS Code 复制 `getValueInRange`；DevTools Console 复制拼模型行。Yohu 对应 `formatLogLine` 偏移，不是 grid DOM 序。
+- **从左点 Tag 不吞时间**，因为命中落在 Tag span 起点，不是行首。
+- **双击不闪**，因为手势直接写模型，禁止先让浏览器选一整行再改回去。
+- **禁止** `user-select: text` 跨格、`Selection.toString()` 当载荷、锁格升档补丁、Monaco/textarea。
+
+入选：DevTools Console、AS Logcat 文档、AG Grid 选区互斥、VS Code Selection、主题笔记。落选：继续打 `user-select` 补丁；把日志换成 Editor。
+
+### 企业级设计体系 / YoUI 升级（2026-09-10 增补）
+
+主题：设计师主导的开源 UI 库，服务 `@yohu/ui` 升级，**主参考 Ant Design**。源码浅克隆在 `%TEMP%/YoAgentResearch/`，知识库只有 Markdown。
+
+- **三层 token 是共识，派生手段不是。** Ant：Seed→algorithm→Map→Alias，运行时 cssinjs（v6 才有 `zeroRuntime`）。Arco：Less 编译成 CSS 变量，`ConfigProvider` 只 `setProperty`。Polaris / Primer：浅/深覆盖表 + CSS 变量。YoUI 已是 Harmony Primitive→Semantic→Component + `emit-theme.ts`，对齐 Arco/Polaris 的静态变量，**不要引进 cssinjs**。
+- **色板锁鸿蒙官方表。** Ant `@ant-design/colors.generate`、Arco `lighten(±10)` 都是另造梯度。禁止从品牌色算法生成 10 阶。
+- **动效不要向 Ant/Arco/Primer 看齐。** Ant `seeds.ts` 自承 Motion Token 未收敛（0.1/0.2/0.3s）；Primer Overlay 写死 200ms。YoUI `MotionSpec` 已锁鸿蒙，继续当唯一时长源。
+- **Button 必须两轴。** Ant `color×variant`，Arco `type×status`。现在的 `YoButtonVariant = primary|secondary|ghost|danger` 把形和语义色混在一起。
+- **输入复合：盒内 prefix/suffix，盒外 addon，status 一等。** Ant 与 Arco 同构。`YoTextField` 只有 clearable。
+- **浮层一个挂载点。** Ant/Arco `getPopupContainer`；Ant Tooltip `UniqueProvider` 共享一个 popup；Primer `AnchoredOverlay` 分自绘锚点 / 外来 ref。对照已有唯一 `YoContextMenuHost` + `popover-place`。缺的是 Tooltip，不是第二套 Trigger。
+- **命令式 API 必须能挂回树。** Ant `App` + `useMessage`；Arco 仍用全局 `Message.config`。YoToast `createToaster` 已是正确形态。
+- **工作台菜单看 Primer，不看 Ant Dropdown。** `ActionList` 复合槽 + `ActionMenu` 只管开合手势。右键已走这条，工具栏溢出/页眉 overflow 应复用同一 List。
+- **lint 看 Polaris，不看它的皮肤。** 白名单从 emit 的 token 名生成（`getThemeVarNames`），不是手写 regex。全局 `--yohu-*` 只许清单里的名字；组件私有变量另前缀。许可是 MIT 变体（独立应用不得长得像 Shopify）。
+- **右键键盘是缺口。** Primer ActionList 有 Arrow / typeahead / Tab 关菜单；YoContextMenu 主要只有 Esc。补键盘，不要改成每处自挂 ActionMenu。
+- **Arco 暗色是选择器覆写，不是算法。** `body[arco-theme='dark']` 只换 alias。右键用 `alignPoint`，跟已有 `openContextMenu(x,y)` 同构。Arco **没有** 全局 density，不能拿它的 `size` 冒充 YoUI `data-density`。
+- **明确不要做的控件。** YoTable / YoForm 引擎 / DatePicker / Upload / Wave / 中文插空格。清单继续 `YoCol*` + `YoVirtualList`；设置继续 `YoFormRow`。
+
+#### 对本知识库规则的候选修订（本主题）
+
+只记录建议，不自动改 `instructions/rules/`。
+
+- ui-kit token：业务与组件 CSS 只许语义/组件层；Primitive/Seed 仅 `tokens/` 与契约测试。
+- ui-kit 公开 API：实心控件的「外形」与「语义色」分轴；禁止再把 `danger` 当成第四种 variant 而不给 status。
+- ui-kit 浮层：Select / 右键 / Tooltip 共用一个 Portal 政策；禁止组件私写 `z-index` 魔法数。
+- ui-kit 菜单键盘：右键/下拉至少 Arrow / Home / End / Esc / Tab 关；禁止只靠指针。
+- token lint：白名单从 `emit-theme` 产物生成，禁止模块定义新的 `--yohu-*` 名。
+- 禁止把 `@ant-design/cssinjs` / `antd` / `@arco-design/web-react` / `@shopify/polaris` / `@primer/react` 写进 `@yohu/ui`。
+
+#### 入选与落选备忘（本主题）
+
+入选 4：`ant-design/ant-design`（主参考）、`arco-design/arco-design`（CSS 变量对照）、`shopify/polaris`（token/lint，非控件面）、`primer/react`（工作台菜单）。
+
+落选：
+
+- Semi Design / TDesign / Element Plus：与 Ant/Arco 同构中后台全家桶。
+- MUI：Material 3 语言与鸿蒙/YoUI 冲突。
+- Carbon：与 Polaris 同属西方企业体系；本轮要的是 lint/token 工程，Polaris 更贴。
+- shadcn/ui：复制模板，不是设计体系仓。
+- Fluent / Spectrum / Radix：已有动效/表头/Presence 切片，不整仓重研。
+- ant-design-vue / NG-ZORRO：同一设计语言的框架移植。
+- Meta Astryx：2026 Beta，不当前主参考。
+- `@primer/primitives` / `@ant-design/cssinjs` 独立仓：本轮结论已够，不另开篇。
