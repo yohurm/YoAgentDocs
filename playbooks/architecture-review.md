@@ -4,7 +4,7 @@ type: playbook
 status: active
 when: modify
 when_to_use: 自底向上做架构审查或按分层修复时
-related: [rule.common.architecture, checklist.architecture-review]
+related: [rule.common.architecture, checklist.architecture-review, experience.public.architecture-review-waves]
 ---
 
 # 手册：架构审查
@@ -16,3 +16,49 @@ related: [rule.common.architecture, checklist.architecture-review]
 5. 发现兼容性代码或兼容层：沿其全部相关数据链路查根因，重设计完整通路，不得只删包装。只改相关链路上证明有问题的层；混职责文件按层拆开；范围内不留双轨与兼容代码。
 6. 实现后再走同一条路径，留下通路证据。
 7. 清单：[checklists/architecture-review.md](../instructions/checklists/architecture-review.md)；平台验证仍走类型包。
+
+多范围、循环复审时接着做下面几节。方法来源（无具名仓库）见 [公共经验：分波次收口](../experiences/public/architecture-review-waves.md)。不要引用 `experiences/private/`。
+
+## 多范围怎么切
+
+范围按**所有权**切，互不重叠：运输、领域/协议、各能力包、壳编排、组件库、页面模块。不要一人扫全仓。层名跟类型包。
+
+库缺口（能力库缺某控件）与模块违规分账：缺口写入已通过项；消费模块自写第二套才记未通过。
+
+## 审查与修复分角色
+
+- **审查**：只读。禁止改任何文件。必须重读当前树，不得沿用上一波「通过」。
+- **修复**：只改任务写死的路径。并行时一人一块所有权，禁止回滚他人未提交改动。邻层只许「一处单源」（常量池、错误枚举），禁止兼容层。
+- 对着**持有当前改动的工作树**审和修。只克隆远端提交的工作树看不见未推送改动。
+
+## 波次循环
+
+```
+声明范围
+  → 并行只读审查（每范围一份结论）
+  → 只处理未通过（HAS_ISSUES）
+  → 全部修复落地
+  → 对全部范围再开一轮只读复审
+  → 同一波次全部通过（CLEAN）才收口
+```
+
+- 通过报告里的「非阻塞观察」**不开**修复环。
+- 不要因为单范围变绿就再开一轮，也不要自行缩范围冒充完成。
+- 迟到的上一波回执，若已进入更新波次，忽略，不重开作业。
+
+## 结论怎么写
+
+每范围固定六段，正文用该仓库层名：
+
+1. 覆盖文件（及本范围认定的层）
+2. 1–3 条设计前链路（入口 → 状态 → 副作用）
+3. 清单逐项：通过/失败 + 证据（文件:行或符号）
+4. 问题清单：P0 / P1 / P2 + 文件:行 + 正确层；无则写无
+5. 已通过项（含对照已声明的修复）
+6. 结论：**CLEAN** 或 **HAS_ISSUES**
+
+只审不改时，用现状代码位置当通路证据；「实现后通路」标不适用。
+
+## 原生测试（Windows）
+
+编译链接原生代码时，使用该平台工具链的链接器。Windows 先装入 MSVC 环境，避免 PATH 上的 Git `usr/bin/link.exe` 冒充链接器。

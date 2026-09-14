@@ -22,4 +22,5 @@ related: [rule.common.architecture, playbook.architecture-review]
 Android 页面才检查 View / ViewModel / Model；桌面检查 View → store → IPC → domain；组件库检查 L0–L5。
 每项架构判断先给出数据链路，改完再给同一路径的通路证据。
 只动当前问题相关链路，不扫全仓无关模块。
+多范围则按所有权切开审查；未通过修完后对全部范围复审；同一波次全绿才收口。CLEAN 中的观察不开修复环。
 ```

@@ -4,11 +4,11 @@ type: task
 status: active
 when: modify
 description: 审查已有代码的分层与质量。用户说审查架构、硬编码、补丁、兼容层、越级、MVVM、数据链路、高内聚、单一职责、文件堆职责、API 里写了实现、耦合 internal 时使用。
-when_to_use: 架构审查、代码审查、硬编码、补丁层、兼容层、越级、MVVM、数据链路、单一职责、API 耦合实现
-triggers: [架构审查, 代码审查, 硬编码, 补丁, 兼容层, 兼容性代码, 越级, MVVM, 数据链路, 高内聚, 耦合, 单一职责, 堆在一个文件, API实现, api/]
+when_to_use: 架构审查、代码审查、硬编码、补丁层、兼容层、越级、MVVM、数据链路、单一职责、API 耦合实现、多范围循环复审
+triggers: [架构审查, 代码审查, 硬编码, 补丁, 兼容层, 兼容性代码, 越级, MVVM, 数据链路, 高内聚, 耦合, 单一职责, 堆在一个文件, API实现, api/, 循环复审, 多范围]
 inputs: [审查范围：模块或用户路径]
-outputs: [链路说明, 问题清单（含文件职责、API 越界、兼容层根因）, 若修复则含通路证据]
-related: [role.architect, playbook.architecture-review]
+outputs: [覆盖文件, 设计前链路, 清单逐项证据, 问题清单（级别+文件:行+正确层）, CLEAN 或 HAS_ISSUES, 若修复则含通路证据]
+related: [role.architect, playbook.architecture-review, experience.public.architecture-review-waves]
 ---
 
 # 任务：架构审查
@@ -45,7 +45,9 @@ related: [role.architect, playbook.architecture-review]
 2. API / 包入口 / 门面类中的实现代码或对 `internal` 的引用。
 3. 兼容性代码 / 兼容层，以及沿相关数据链路查到的根因（若有）。
 
-未要求改代码时只出结论与证据。
+多范围时：按所有权切开并行只读；修复员互不改同一所有权；未通过全部落地后再对**全部**范围复审。报告六段与波次规则见手册。
+
+未要求改代码时只出结论与证据，禁止改文件。
 
 ## 完成标准
 
@@ -55,9 +57,13 @@ related: [role.architect, playbook.architecture-review]
 - 未改代码也有设计前链路；已改则设计前/后都有。
 - 宣称 API 干净时，能指出门面文件只做契约转发。
 - 宣称无兼容层时，能指出相关链路已统一、无双轨残留。
+- **多范围：** 同一复审波次内全部范围结论为 CLEAN 才允许结束。不得因单范围通过或自行缩范围而收口。CLEAN 中的非阻塞观察不开修复环。
+- 每一波复审重读当前树，不得沿用上一波 CLEAN。
 
 ## 不做
 
 - 不把「拆文件」做成无关模块的全仓重排。
 - 不在 API 层用转发函数继续调用本文件里的算法来「看起来像门面」。
 - 不用删除包装代替重设计；不把兼容层留作「过渡」。
+- 不把库缺口记成消费模块违规（消费方自写第二套除外）。
+- 不引用 `experiences/private/` 来写公共结论。

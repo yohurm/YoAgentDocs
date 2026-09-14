@@ -24,7 +24,7 @@ related: [root.agents, root.catalog]
 | [playbooks/](playbooks/) | 多步怎么干 |
 | [templates/](templates/) | 新增文档骨架 |
 | [research/](research/) | 联网深研产出 |
-| [experiences/](experiences/) | 自有项目经验 |
+| [experiences/](experiences/) | 经验：`public/` 可复用方法；`private/` 具名项目对照（公共指令禁止引用） |
 
 ## 指令怎么叠加
 

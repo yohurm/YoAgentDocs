@@ -4,7 +4,7 @@ type: checklist
 status: active
 when: modify
 when_to_use: 架构审查或模块重设计收尾时
-related: [rule.common.architecture]
+related: [rule.common.architecture, playbook.architecture-review]
 ---
 
 # 架构审查
@@ -19,3 +19,8 @@ related: [rule.common.architecture]
 - [ ] 无越级调用；下层不持有上层引用；描述用该仓库类型包的层名（Android 页面才检查 View / ViewModel / Model；桌面检查 View → store → IPC → domain；组件库检查 L0–L5）
 - [ ] 持久化 / 领域 / 传输模型未跨层共用同一结构；层边界有转换
 - [ ] 无防御性修补（空判断掩盖上游、吞异常、延时/重试/标志位、只改 UI 藏错）
+- [ ] 错误变体只分类，载荷为路径/计数/标识；用户句子与宿主文案不进邻层错误类型
+- [ ] 异步交接按请求意图匹配；槽位等待用条件通知，不用延时轮询
+- [ ] 回退/重试不关闭仍属于该代际的资源（管道、根令牌）；本次 attempt 用子令牌
+- [ ] 库缺口与模块违规分账（缺库能力不记消费模块违规，除非模块自写了第二套）
+- [ ] 多范围任务：同一复审波次全部范围为 CLEAN 才收口；CLEAN 中的非阻塞观察不开修复环

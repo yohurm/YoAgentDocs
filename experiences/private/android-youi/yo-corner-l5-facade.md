@@ -1,11 +1,13 @@
 ---
-id: experience.android-youi.yo-corner-l5-facade
+id: experience.private.android-youi.yo-corner-l5-facade
 type: experience
 status: active
-when_to_use: 审查 YoUI api/ 门面是否塞进实现，或重做 L1 共享能力时
+when_to_use: 对照 Android-YoUI 门面拆分时（私有；公共指令勿链此文）
 ---
 
 # YoCorner：L5 门面不得持有实现
+
+私有对照。薄门面原则见类型包 `ui-kit` 的 `public-api.md` / `file-srp.md`，不要把下文方法再抄进公共指令。
 
 ## 背景
 
@@ -25,7 +27,7 @@ Android-YoUI 增加 L1 圆角能力时，`api/common/YoCorner` 被写成带 Rose
 
 `Radii` 只保留公开数据与 `concentric`。拟合算法不出现在 `api/`。
 
-## 可复用决策
+## 可复用决策（已回写类型包）
 
 - 组件 API 对标 `YoRipple`：接口 + `XxxImpl`，不是 `final class` 工具包。
 - `api/` 只允许指向装配类，禁止 `internal`。

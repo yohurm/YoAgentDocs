@@ -18,7 +18,7 @@ Agent **自己匹配并执行**。用户不必粘贴短提示。
 |------|----------------|------|
 | [联网深研](instructions/prompts/tasks/online-deep-research.md) | 搜索/深研开源、GitHub、GitCode、clone 到 Temp、沉浸光感/某效果「先调研」、不知道怎么实现要先看别人 | 该任务 |
 | [架构设计](instructions/prompts/tasks/architecture-design.md) | 新模块、自底向上设计、怎么分层、要不要新模块、先出方案再写代码、Plan | 该任务 |
-| [架构审查](instructions/prompts/tasks/architecture-review.md) | 审查架构/质量、硬编码、补丁层、兼容层、越级、MVVM（仅 Android 页面词）、数据链路、高内聚、文件单一职责、API 里写了实现 | 该任务 + 类型包层名 |
+| [架构审查](instructions/prompts/tasks/architecture-review.md) | 审查架构/质量、硬编码、补丁层、兼容层、越级、MVVM（仅 Android 页面词）、数据链路、高内聚、文件单一职责、API 里写了实现、多范围循环复审 | 该任务 + 类型包层名 |
 | [实现功能](instructions/prompts/tasks/implement.md) | 开发某组件/功能、对齐官方设计、全量实现、按规范做出来、组件分层 | 该任务 |
 | [修复缺陷](instructions/prompts/tasks/bug-fix.md) | 闪退、对不齐、动画不对、Logcat、截图不对、联调失败、修 bug | 该任务 |
 
