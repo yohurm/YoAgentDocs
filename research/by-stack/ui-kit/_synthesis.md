@@ -13,6 +13,8 @@ stack:
 
 | 仓库 / 主题 | 一句话 | 利用方式 |
 |-------------|--------|----------|
+| [clauderic/dnd-kit](clauderic--dnd-kit.md) | 虚拟列表换位：DragOverlay + 源行占位 + arrayMove | reuse-pattern：浮层与源分离；anti-pattern：引进 dnd-kit |
+| [atlassian/pragmatic-drag-and-drop](atlassian--pragmatic-drag-and-drop.md) | closest-edge 插缝线，2px selected | reuse-pattern：缝不是行顶；anti-pattern：引进 Atlaskit |
 | [工作台命令带分区](desktop--workbench-command-band.md) | 标题铬与 Command band 分权；空态安静；文档命令留在画布 | reuse-pattern：URL 不下 caption 行 |
 | [files-community/Files](files-community--Files.md) | Tab / 地址栏 48px / Inner Toolbar / 侧栏 / 状态栏 | reuse-pattern：地址栏独立行 |
 | [地址栏展开铬/全选/收回](desktop--address-edit-focus.md) | 铬=可见盒；Chromium mouseup 全选；Files 主动 SelectAll | reuse-pattern：pointerup 后 focus；anti-pattern：槽 stretch 当路径栏 |
@@ -34,7 +36,8 @@ stack:
 | [arkui_ace_engine Tabs 动效](openharmony--arkui_ace_engine-tabs-motion.md) | TabBarPattern 弹簧 / Symbol 触发 / duration=0 | reuse-pattern：listItemSwipeSpring |
 | [Spatialization HdsTabs 隐藏](HarmonyOS_Samples--Spatialization.md) | 滚动方向调 applyHide/Show，曲线在 HDS | lesson-only：应用不自写藏栏 |
 | [microsoft/fluentui react-motion](microsoft--fluentui.md) | atom → Presence 工厂 → Fade；enter/exit 默认同时长 | reuse-pattern：换牌原语与按钮分层 |
-| [radix-ui/primitives Presence](radix-ui--primitives.md) | 布尔进出场状态机，不管视觉 | reuse-pattern：Presence ≠ Swap |
+| [radix-ui/primitives Presence](radix-ui--primitives.md) | 布尔进出场状态机，不管视觉；Collapsible 关前量高 | reuse-pattern：Presence ≠ Swap；关窗先锁盒 |
+| [桌面 Dialog 用后高](desktop--dialog-used-height.md) | Fluent 量一次写关键帧；鸿蒙关窗只淡出缩放；RO 盯插值盒会吃掉行程 | reuse-pattern：意图驱动 hug-travel；anti-pattern：关窗清 height / exit fill-flex |
 | [HarmonyOS 圆角参数](harmony--corner-radius.md) | 4/8/16/20/32vp 层级；圆弧 RRect；clip 与半径分权 | reuse-pattern：同几何 fill+clip；Rosen 比例缩放 |
 | [Rosen RoundRect](openharmony--graphic_graphic_2d-roundrect.md) | 四角 XY 半径 + ScaleRadii | reuse-pattern：邻角抢边按比例缩 |
 | [iOS 连续圆角](apple--continuous-corners.md) | G2 continuous；concentric = parent − padding | adapt：CIRCULAR 默认，CONTINUOUS opt-in |
@@ -250,6 +253,17 @@ Liquid Glass（2026-09-04）：规范读 WWDC 219/284 + UIKit JSON。实现读 Q
 - ant-design-vue / NG-ZORRO：同一设计语言的框架移植。
 - Meta Astryx：2026 Beta，不当前主参考。
 - `@ant-design/cssinjs` 独立仓：本轮结论已够，不另开篇。
+
+### 定高列表换位（2026-09-11 增补）
+
+主题：命令管理组/条目拖拽。规范：鸿蒙 List `onMove`（浮起、占位、让位、松手改数据）、Apple HIG 列表水平插缝、Atlassian closest-edge 2px 线、dnd-kit 虚拟列表 DragOverlay。
+
+- **三件套：** 跟指针的浮层 + 源行占位 + 邻行让位。只画一条钉在行顶的线不够。
+- **缝不是行：** 插入坐标是 0..count 的行缝（最近中线），原槽不画线。
+- **数据晚提交：** 预览用 transform；`arrayMove` / `moveItemTo` 在 pointerup。Escape 取消。
+- **不要引进** `@dnd-kit/*` 或 Atlaskit。几何留在 YoUI L2/L3。
+
+入选 2：`clauderic/dnd-kit`、`atlassian/pragmatic-drag-and-drop`。落选：SortableJS（DOM 重排、虚拟列表不友好）、hello-pangea/dnd（rbdnd 移植，模型同构）。
 
 ### 桌面深色色板（2026-09-11 增补）
 

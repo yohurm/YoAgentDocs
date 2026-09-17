@@ -14,8 +14,8 @@ source:
   repo: radix-ui/primitives
   url: https://github.com/radix-ui/primitives
   cloned_to: "%TEMP%/YoAgentResearch/radix-ui--primitives"
-studied_at: 2026-08-20
-related: [research.microsoft-fluentui, research.synthesis.ui-kit]
+studied_at: 2026-09-16
+related: [research.microsoft-fluentui, research.desktop-dialog-used-height, research.synthesis.ui-kit]
 ---
 
 # radix-ui/primitives（Presence）
@@ -51,6 +51,16 @@ Yohu `YoPresence` 已按 Radix 的 `data-state` 思路做了布尔进出场。�
 - 能直接用：出场结束再卸、测试环境 skip。
 - 不要用：把 Button 做成「两个 YoPresence」。
 
+## Collapsible（2026-09-16 补读）
+
+`packages/react/collapsible/src/collapsible.tsx`：
+
+- Content 外包 Presence；`context.open` 变 false 时 **先挡住 transition 再量 `getBoundingClientRect`**，写成 `--radix-collapsible-content-height`。
+- 关的量高发生在 Presence 卸节点之前，不是卸完之后清高度。
+- 自己不盯 ResizeObserver。消费方 CSS 用变量做 `0 → var(--height)`。
+
+Yohu fit Dialog 关窗应对齐这条：hug 冻锁到 `onExitComplete`，禁止 `isOpen` 那一拍 `write({})`。
+
 ## 阅读范围
 
-`packages/react/presence/src/{presence,use-state-machine,index}.tsx`。
+`packages/react/presence/src/{presence,use-state-machine,index}.tsx`；`packages/react/collapsible/src/collapsible.tsx`。
