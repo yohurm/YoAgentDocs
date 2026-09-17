@@ -4,8 +4,8 @@ type: task
 status: active
 when: new-work
 description: 为新模块或重画边界产出分层方案。用户说自底向上设计、先出架构、怎么分层、要不要新开模块、Plan、先别写代码时使用。
-when_to_use: 新模块分层、自底向上设计、先方案后代码、是否新开模块
-triggers: [架构设计, 自底而上, 怎么分层, 新模块, 先出方案, Plan, 先别写代码]
+when_to_use: 新模块分层、自底向上设计、先方案后代码、是否新开模块、旧架构重画
+triggers: [架构设计, 自底而上, 怎么分层, 新模块, 先出方案, Plan, 先别写代码, 重设计, 旧架构]
 inputs: [要设计的能力或模块, 可选：对标系统]
 outputs: [分层方案, 数据链路, 对现有模块的影响]
 related: [role.architect, playbook.architecture-design]
@@ -34,7 +34,7 @@ related: [role.architect, playbook.architecture-design]
 
 ## 步骤
 
-按手册执行。实现路径完全不明时，先切 [online-deep-research.md](online-deep-research.md)，再回到本任务。
+按手册执行。实现路径完全不明、或现有分层只能靠打补丁撑住时，先切 [online-deep-research.md](online-deep-research.md) 调研优秀设计，再回到本任务重画完整数据链路。严禁猜测。
 
 ## 完成标准
 
@@ -46,5 +46,6 @@ related: [role.architect, playbook.architecture-design]
 
 ## 不做
 
+- 不在旧架构上继续修补、打补丁或做防御性加固。
 - 不在方案阶段加补丁式兼容层「先跑通」；目标分层不得依赖双轨或永久适配。
 - 不把调研源码拷进业务仓库或本知识库。

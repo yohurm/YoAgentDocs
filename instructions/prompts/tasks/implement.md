@@ -50,4 +50,5 @@ related: [role.implementer, playbook.implement]
 ## 不做
 
 - 不把官方示例工程整份拷进仓库。
+- 不在旧架构上继续打补丁或做防御性加固。
 - 不在实现里保留兼容性代码、兼容层或「临时兼容」双轨 API。

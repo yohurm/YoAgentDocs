@@ -3,9 +3,9 @@ id: task.architecture-review
 type: task
 status: active
 when: modify
-description: 审查已有代码的分层与质量。用户说审查架构、硬编码、补丁、兼容层、越级、MVVM、数据链路、高内聚、单一职责、文件堆职责、API 里写了实现、耦合 internal 时使用。
-when_to_use: 架构审查、代码审查、硬编码、补丁层、兼容层、越级、MVVM、数据链路、单一职责、API 耦合实现、多范围循环复审
-triggers: [架构审查, 代码审查, 硬编码, 补丁, 兼容层, 兼容性代码, 越级, MVVM, 数据链路, 高内聚, 耦合, 单一职责, 堆在一个文件, API实现, api/, 循环复审, 多范围]
+description: 审查已有代码的分层与质量。用户说审查架构、硬编码、补丁、兼容层、旧架构打补丁/加固、越级、MVVM、数据链路、高内聚、单一职责、文件堆职责、API 里写了实现、耦合 internal 时使用。不得在旧架构上继续修补。
+when_to_use: 架构审查、代码审查、硬编码、补丁层、兼容层、旧架构打补丁、防御性加固、越级、MVVM、数据链路、单一职责、API 耦合实现、多范围循环复审
+triggers: [架构审查, 代码审查, 硬编码, 补丁, 兼容层, 兼容性代码, 旧架构, 打补丁, 防御性加固, 越级, MVVM, 数据链路, 高内聚, 耦合, 单一职责, 堆在一个文件, API实现, api/, 循环复审, 多范围]
 inputs: [审查范围：模块或用户路径]
 outputs: [覆盖文件, 设计前链路, 清单逐项证据, 问题清单（级别+文件:行+正确层）, CLEAN 或 HAS_ISSUES, 若修复则含通路证据]
 related: [role.architect, playbook.architecture-review, experience.public.architecture-review-waves]
@@ -31,7 +31,7 @@ related: [role.architect, playbook.architecture-review, experience.public.archit
 
 ## 目标
 
-对给定模块或用户路径做分层审查。除数据链路与越级外，**必须**检查：文件是否单一职责、公开 API 是否夹带实现、是否存在兼容性代码或兼容层。有问题在正确层修，不加包装。发现兼容层则沿全部相关数据链路查根因，重设计完整通路。
+对给定模块或用户路径做分层审查。除数据链路与越级外，**必须**检查：文件是否单一职责、公开 API 是否夹带实现、是否存在兼容性代码或兼容层。有问题在正确层修，不加包装。禁止在旧架构上继续打补丁或做防御性加固：先严格调研优秀设计，梳理完整数据链路，再重设计通路、重构问题并清理旧代码。发现兼容层则沿全部相关数据链路查根因，重设计完整通路。严禁猜测。
 
 ## 输入
 
@@ -64,6 +64,7 @@ related: [role.architect, playbook.architecture-review, experience.public.archit
 
 - 不把「拆文件」做成无关模块的全仓重排。
 - 不在 API 层用转发函数继续调用本文件里的算法来「看起来像门面」。
+- 不在旧架构上继续修补、打补丁或做防御性加固。
 - 不用删除包装代替重设计；不把兼容层留作「过渡」。
 - 不把库缺口记成消费模块违规（消费方自写第二套除外）。
 - 不引用 `experiences/private/` 来写公共结论。

@@ -5,13 +5,24 @@ status: active
 severity: must
 scope: common
 when: always
-when_to_use: 架构审查、模块重设计、兼容层、补丁层，或用户要求从分层上保证质量时
-related: [rule.common.development, rule.modification.common, rule.common.stack-layering, checklist.architecture-review, rules.type.ui-kit.file-srp, rules.type.ui-kit.public-api]
+when_to_use: 架构审查、模块重设计、兼容层、补丁层、旧架构修补，或用户要求从分层上保证质量时
+related: [principle.engineering, rule.common.development, rule.modification.common, rule.common.stack-layering, checklist.architecture-review, rules.type.ui-kit.file-srp, rules.type.ui-kit.public-api]
 ---
 
 # 架构与代码质量
 
 自底向上看：先模块边界和数据流，再具体实现。架构结论在数据链路证据齐之前，不算审查完成。
+
+## 旧架构不打补丁
+
+解决问题时，禁止继续在旧架构上修补、打补丁或做防御性加固。正确顺序：
+
+1. **严格调研优秀设计：** 先读官方规范与已验证的开源实现（见 [design-sources.md](design-sources.md)；实现路径不明则走联网深研）。出处写进结论。没有出处不得发明「应该这样」。
+2. **梳理完整数据链路：** 入口 → 状态持有 → 业务变换 → 副作用终点。相关链路一条不漏。节点不清就继续查，禁止用猜测填空。
+3. **重设计架构：** 按目标分层改边界、状态归属与契约；一次替换旧路径。
+4. **重构问题并清理旧代码：** 把问题落到新通路上解决；删除旧实现、双轨与残留防御。不要注释冻结。
+
+局部逻辑错误且现有分层仍正确时，只在该层做行为修复。只要拟议改动是在旧边界上「先顶住」「先加固」，就必须按上列顺序重设计，不得降级成补丁。
 
 ## 高内聚、低耦合
 
@@ -38,7 +49,7 @@ related: [rule.common.development, rule.modification.common, rule.common.stack-l
 
 ## 严禁兼容层
 
-兼容性代码与兼容层**不得存在**。禁止用兼容类、适配器、包装函数、别名、双轨 API、版本 if、过时目录把错误边界「先顶住」。
+兼容性代码与兼容层**不得存在**。禁止用兼容类、适配器、包装函数、别名、双轨 API、版本 if、过时目录把错误边界「先顶住」。这是「旧架构不打补丁」的具体形态，不得用兼容层代替重设计。
 
 发现上述任何一种，不得只删包装或再叠一层。必须：
 
@@ -52,7 +63,7 @@ related: [rule.common.development, rule.modification.common, rule.common.stack-l
 
 ## 禁止防御性修补
 
-根因在哪一层就改哪一层。禁止用旁路把现象盖住：
+根因在哪一层就改哪一层。禁止用旁路把现象盖住，也禁止把「加固旧架构」当成修复：
 
 - 对本不应为空的值加空判断：掩盖上游未赋值。追源头保证契约，而不是在消费处吞掉。
 - 大范围 try-catch 吞异常：问题被藏住。在产生异常的位置修。
@@ -69,7 +80,7 @@ related: [rule.common.development, rule.modification.common, rule.common.stack-l
 1. **设计前：** 现状从入口到存储/设备/IPC 的调用链（谁持有状态、谁变换、谁出副作用），以及问题出在哪一跳。
 2. **实现后：** 同一条链路上的新路径，用代码位置或运行证据（日志、截图、测试）说明数据怎么走通。
 
-没有链路证据的「感觉更干净」不算架构完成。
+没有链路证据的「感觉更干净」不算架构完成。链路节点不清晰时必须继续查，严禁猜测。
 
 ## 文件单一职责
 
