@@ -43,12 +43,44 @@ stack:
 | [wry 子 HWND 显隐](tauri-apps--wry-child-visible.md) | `ShowWindow` + `SetIsVisible` 成对；Destroy 只在 Drop | reuse-pattern / anti-pattern |
 | [mpv-examples 嵌入槽](mpv-player--mpv-examples.md) | 宿主原生槽 + wid 子窗；CSS 管不着嵌入表面 | reuse-pattern / anti-pattern |
 | [投屏交换链铬](desktop--mirror-swapchain-chrome.md) | 空态/暂停必须持续 Present；DComp clip 裁位图边，dirty 一次画会丢描边 | reuse-pattern / anti-pattern |
+| [投屏占用比例与清晰度](desktop--mirror-aspect-scale.md) | 占用/描边锁 session 内容尺寸；硬解纹理可更大，blit 前裁源 | reuse-pattern / anti-pattern |
+| [投屏缩小核](desktop--mirror-downsample.md) | dest=contain；>2:1 面积核；mip 与整数栅格都是反例 | reuse-pattern / anti-pattern |
+| [libplacebo 呈现阶](haasn--libplacebo.md) | 放大/缩小核分字段；RGB 之后才 PRE_KERNEL；禁整库 | reuse-pattern / anti-pattern |
+| [mpv scaler 选项](mpv-player--mpv.md) | VO dest ≠ dscale；correct-downscaling = 半径跟缩小比 | reuse-pattern / adapt |
+| [moonlight contain](moonlight-stream--moonlight-qt.md) | 一份 Fit 喂全部后端+触控；UV 裁 alignment；无独立核层 | reuse-pattern / anti-pattern |
+| [OBS scale-filter](obsproject--obs-studio.md) | 具名滤镜；>2:1 静默改低分双线性是反例 | reuse-pattern / anti-pattern |
+| [Magpie 效果链](Blinue--Magpie.md) | ScalingType ≠ Effect.name；缩小是再挂一节 | reuse-pattern / anti-pattern |
+| [zimg 图节点](sekrit-twc--zimg.md) | colorspace 与 resize 分节点；POINT 永不抗混叠 | reuse-pattern / anti-pattern |
+| [libyuv API](lemenkov--libyuv.md) | I420ToARGB ≠ I420Scale；Box 是缩小档 | reuse-pattern / anti-pattern |
+| [FFmpeg swscale](FFmpeg--FFmpeg.md) | dest / 格式 / flags 三分；禁链 FFmpeg | reuse-pattern / anti-pattern |
+| [GStreamer videoscale](gstreamer--gst-plugins-base.md) | videoscale ≠ videoconvert；caps 宽高 ≠ method | reuse-pattern / anti-pattern |
+| [MiniEngine mip](microsoft--DirectX-Graphics-Samples.md) | >2:1 单拍不够；GenerateMips 不是 dest 核 | reuse-pattern / anti-pattern |
 | [PacketSender 面板脚本](dannagle--PacketSender.md) | 命名按钮存多行脚本；`delay:秒` 是脚本行；开跑前整段校验 | reuse-pattern / anti-pattern |
 | [android-simple-adb 脚本](Alexs784--android-simple-adb.md) | ADB Script=有序 Step；sleep 被做成主机命令；失败重试写死 2s | reuse-pattern / anti-pattern |
 | [Bruno Collection Runner](usebruno--bruno.md) | 间隔是本次 Run 参数；睡眠可取消；实现却 before-each（含第一发） | reuse-pattern / anti-pattern |
 | [Lazy Blacktea 命令库](leaf76--lazy_blacktea_rust.md) | 同栈 Tauri 命令库仍是单行字符串 + tags/risk | lesson-only / anti-pattern |
+| [Nordic Android-BLE-Library](NordicSemiconductor--Android-BLE-Library.md) | 一外设一 BleManager；直连 close 后再 connectGatt(TRANSPORT_LE) | reuse-pattern / anti-pattern |
+| [weliem/blessed-android](weliem--blessed-android.md) | Central 拥有表；Peripheral 未 DISCONNECTED 不连；断开必 close | reuse-pattern / adapt |
+| [JuulLabs/kable](JuulLabs--kable.md) | 一次连接一个 Connection；断开超时只收尾 | reuse-pattern / lesson-only |
+| [Gadgetbridge](Freeyourgadget--Gadgetbridge.md) | Service 编排；再连先 dispose；耳机 RFCOMM ≠ A2DP | reuse-pattern / anti-pattern |
+| [SettingsLib 蓝牙](LineageOS--android_frameworks_base.md) | 设备聚合 profile；isConnected 是音频；mDevice.connect 特权 | reuse-pattern / anti-pattern |
+| [经典+BLE 连接对象](android--classic-ble-connection-architecture.md) | 三条「已连接」；GATT 短寿；HS01 要组合不能抄单库 | reuse-pattern / anti-pattern |
 
 ## 共同架构经验
+
+### Android 经典 + BLE 连接对象（2026-09-17）
+
+HS01 要双模同时在：经典 ACL 是加耳机，GATT 是命令。五份源码没有现成整库，但对象模型一致。
+
+1. **GATT 对象与这一次无线电同生共死。** Gadgetbridge `BtLEQueue` 换连时 `disconnect(); close();` 不等回调，再 `connectGatt(TRANSPORT_LE)`。Nordic 直连也是 close 后新对象。Blessed 未 DISCONNECTED 拒绝 connect。Kable 的 `Connection?` 短寿，断开超时只 close。长寿 Manager 上挂 `pendingReplace` + 5s 拆链重试是反例。
+2. **「已连接」按产品选事实源。** Settings `isConnected()` = 任一 A2DP/HFP。HS01 不能抄：profile 断不是经典断。GATT 库对外成功在服务发现（+ 初始化）之后。Gadgetbridge `INITIALIZED` ≠ `CONNECTED`。
+3. **经典发起与观察分开。** Settings 观察（ACL 分运输、bond、UUID、profile）可搬。`BluetoothDevice.connect()` / `setConnectionPolicy` 是特权，第三方走 `createBond` + 隐藏 profile `connect`。配对是 `BOND_*`，不是断开。
+4. **编排不持有 Gatt。** Gadgetbridge 再 connect 先 dispose Support。Nordic 推荐新 BleManager。UI / YoSPPApi 只对 Orchestrator。
+5. **双模 GATT 锁 `TRANSPORT_LE`。** 四份 GATT 实现都这样。`autoConnect=true` 不当主路径。
+6. **没有「ACL+GATT 同时维持」的开源整库。** 小米 BOTH 是选路；索尼耳机假定系统已连 A2DP。HS01 要组合，不是再包一层超时。
+
+---
+
 
 ### 命令块 / 序列间隔（2026-09-11）
 
@@ -79,6 +111,49 @@ scrcpy 每帧 Clear+Present，libmpv 要叠 OSD 必须走 Render 每帧画，Dir
 3. **改 ARGB / 加井底盖不住所有权。** 开始→停止后边框消失，是 contain→fill 动画吃掉唯一一次 hairline。
 
 详见 [投屏交换链铬](desktop--mirror-swapchain-chrome.md)。
+
+### 占用比例与缩小清晰度（2026-09-15）
+
+scrcpy 窗口锁的是 **session 内容宽高**，不是硬解纹理。编码 alignment / MF `STREAM_CHANGE` 会让纹理大于 session（真机 1220×2712 → 纹理 1248×2720）。ya-webadb 也把 `coded` 和显示盒分开，显示盒必须先有正确比例。
+
+Yohu 没有独立 OS 窗：avail 是格子，**DComp clip + 描边 = 那扇窗**。三套尺寸必须拆开：
+
+| 尺寸 | 来源 | 用途 |
+|------|------|------|
+| 内容 | session 包 / `EncodedFrame` / Live 事件 | 占用、描边、dest、触控 |
+| 纹理 | MF / D3D desc | 只建资源 |
+| 占用 | contain(avail, 内容) | clip；dest 铺满它 |
+
+框**内**黑边 = 画出了对齐填充，或占用与 dest 用了两套比例。框**外**深色 = 舞台底，对。缩小：dest 仍是 contain（尽量多像素）；RGB 1:1 无 mip；每个 dest 像素面积平均源矩形。整数 1/3 dest 与 `GenerateMips` 都是反例。USB 不要为「清晰」再砍 `max_size`。
+
+详见 [占用比例与清晰度](desktop--mirror-aspect-scale.md)、[缩小核](desktop--mirror-downsample.md)。
+
+### 呈现五层：Fit / Convert / Scale / Compose / Present（2026-09-15）
+
+十份源码（libplacebo、mpv、moonlight、OBS、Magpie、zimg、libyuv、swscale、GStreamer videoscale、MiniEngine）加上已有 scrcpy，叠成同一条桌面呈现链。层名跟 windows-desktop：View → store → IPC → commands → domain / `mirror_present`。**禁止叫 MVVM。**
+
+| 层 | 拥有 | 不拥有 | 源码锚点 |
+|----|------|--------|----------|
+| **Fit** | dest 像素、占用、触控映射 | 核、色矩阵 | moonlight `scaleSourceToDestinationSurface`；mpv VO dest；Magpie `ScalingType`；Yohu `present_dest` |
+| **Convert** | YUV→RGB、裁 alignment | dest 宽高 | libyuv `I420ToARGB`；zimg colorspace 节点；GStreamer `videoconvert`；Yohu VP `SourceRect` 1:1 |
+| **Scale** | 核(src, dest) | contain 政策 | libplacebo `downscaler`；mpv `--dscale`；OBS scale-filter；swscale `SWS_AREA`；libyuv `kFilterBox` |
+| **Compose** | clip / 卡片 = dest | 再 contain | Magpie overlay；Yohu DComp clip / NSView 圆角 |
+| **Present** | 交换链 / NSView contents | 缩放算法 | libplacebo swapchain；Yohu DXGI Present |
+
+共同该搬：
+
+1. **Fit 永不选核。** 核永不改 dest 像素数。mpv 改 `--dscale` 不改窗口盒子。
+2. **Convert 永不缩放。** libyuv 转色函数没有 dst 宽高。VP 输出 RGB = crop。
+3. **Scale 看不到垫过的纹理。** moonlight UV 裁填充后再采样；Yohu SourceRect 已裁。
+4. **Compose 不再算 contain。** 占用 = dest。
+5. **>2:1 必须盖源足迹。** MiniEngine 原文；OBS 8 点；Yohu 面积 3×3。禁止 `GenerateMips`。
+6. **NULL 核 / 硬件双线性 = 跳过抗混叠。** libplacebo `downscaler==NULL` ⇒ `skip_anti_aliasing`；mpv `skip_anti_aliasing = !correct_downscaling`。
+
+明确不做：libplacebo / FFmpeg / zimg / MagpieFX / GStreamer 进壳；OBS 在 `dest<src/2` 丢掉 Area；整数缩小 dest；VP 一次双线性压到 clip；View `containInZone`。
+
+Yohu 设计前：`windows/gpu.rs` 同时持 VP、内联面积 HLSL、viewport、DComp clip、swapchain Present。改核必须改 HWND/D3D 神文件。macOS `view.rs` 把缩小焊成 `kCAFilterLinear`。
+
+Yohu 设计后：Fit 留 `scale.rs` + `Stage`；Convert / Scale / Compose / Present 分模块。一次替换，无 mip / 整数栅格 / 面积 双轨。方案见产品仓 ADR-v6-032。
 
 ### 原生嵌入表面的显隐（2026-09-11）
 
@@ -354,6 +429,9 @@ F 第三方 APK       MediaProjection + 无障碍。另一个产品
 - windows-desktop 类型包可补：设备 HCI 是独立二进制流（btsnoop），不是 logcat。实时分套接字档与 root 文件档，先探测再开采；无能力时只提供 bugreport 快照。运输走 sidecar adb，禁止自讲 ADB 协议。HCI 路径不进 SafetyRoot。
 - windows-desktop 类型包可补：无线 ADB 是运输，不是新模块。优先 USB 一次 `adb tcpip`（不开「无线调试」开关）；Android 11+ 配对走 sidecar `adb pair`/`connect`/`mdns`，禁止重实现 TLS。`tcp:` 默认 forward。禁止把厂商管家或 Miracast 接到 scrcpy 槽。
 - windows-desktop 类型包可补：命令库叶子可以是多步块；间隔是条目字段（常量集），不是脚本行、不是本次 Run 参数。睡眠在 domain 且可取消。禁止 UI `setTimeout` 编排，禁止 sleep 步进 IO 流。
+- windows-desktop 类型包可补：工作台投屏占用卡片锁 scrcpy session 内容宽高；硬解纹理可以更大，blit 前裁源。禁止用解码器输出尺寸当边框，禁止占用一套尺寸、GPU 再 contain 另一套。缩小：dest=contain，面积核盖源矩形；禁止 GenerateMips、禁止整数缩小 dest。
+- windows-desktop 类型包可补：`mirror_present` 内再分 Fit / Convert / Scale / Compose / Present。几何与核不得同文件。禁止把缩小核写进 HWND/D3D 神文件或 NSView `minificationFilter`。禁止链 libplacebo / FFmpeg / zimg。
+- Android 陪伴耳机若升规则：GATT 对象与这一次无线电同生共死；经典「已连接」用 ACL+bond，不用 A2DP/HFP；第三方禁止 `BluetoothDevice.connect()`。先走架构设计，不自动写进 `instructions/rules/`。
 
 ## 入选与落选备忘
 
@@ -377,6 +455,40 @@ F 第三方 APK       MediaProjection + 无障碍。另一个产品
 - MicrosoftEdge/WebView2Samples：官方 `put_IsVisible` 与 Visual 宿主。
 - tauri-apps/wry：Yohu 实际用的子 HWND 显隐。
 - mpv-player/mpv-examples：宿主槽拥有嵌入视频窗。
+
+**入选（占用比例 / 清晰度，2026-09-15）**
+
+- scrcpy：窗口比例锁、`compute_content_rect`、mipmaps、encoder alignment（补进已有篇 + 主题篇）。作者承认 mip 是 quick-and-dirty（issue 1394）。
+- MiniEngine `GenerateMipsCS.hlsli`：>2:1 禁止单点双线性（主题篇 [缩小核](desktop--mirror-downsample.md)）。已整段克隆核对。
+- ya-webadb：`canvasSize` video/display；coded ≠ 显示盒。
+- 主题笔记：session / 纹理 / 占用拆开；dest=contain；缩小用面积核。
+
+**入选（呈现分层，2026-09-15，10 仓）**
+
+- libplacebo：钩子阶 + 缩小核字段；禁整库。
+- mpv：VO dest 与 dscale；`correct-downscaling` 映射 `skip_anti_aliasing`。
+- moonlight-qt：一份 contain + 裁填充；反例是没有 Scale 层。
+- OBS：具名 scale-filter；反例是 `dest<src/2` 丢掉 Area。
+- Magpie：ScalingType ≠ 效果名；缩小另挂一节；禁 GPL 效果链。
+- zimg：colorspace / resize 分节点。
+- libyuv（lemenkov 镜像）：Convert ≠ Scale 头文件。
+- FFmpeg libswscale（sparse）：三分参数；禁链。
+- GStreamer videoscale（sparse）：元件边界。
+- MiniEngine（sparse）：mip 反例原文。
+
+**落选（占用比例 / 清晰度）**
+
+- 整数缩放当缩小架构：scrcpy `--render-fit=unscaled` / 像素完美快捷键；嵌入槽远小于手机时整数缩小 dest 是反例。moonlight **仓已入选**（contain 单函数 + 裁填充），仓内没有整数 dest；README `v7.349.0` 是 libplacebo 版本，不是缩放 issue。
+- 再克隆 QtScrcpy：独立 Qt 窗 + FFmpeg，已是否决；不回答硬解裁源。
+- 把比例问题并进交换链铬篇：那篇是回缓冲主人，不是尺寸契约。
+
+**落选（呈现分层）**
+
+- rustdesk：sparse 检出失败且远程桌面多为一次拉伸 blit，补不了五层。
+- iina / kodi：mpv/libplacebo 包装或同构，不重复。
+- webrtc `video_adapter`、Chromium media：仓过大，libyuv 已抽出 Convert/Scale。
+- FidelityFX CAS / Anime4K：POST_KERNEL 锐化或游戏放大，不是嵌入槽缩小。
+- `github.com/google/libyuv`：仓库不存在；用 lemenkov 镜像对 chromium 上游。
 
 **落选（叠层生命周期）**
 
@@ -461,3 +573,24 @@ F 第三方 APK       MediaProjection + 无障碍。另一个产品
 - `saleehk/adb-wifi` 等二维码包装：只是 `adb pair` 的壳，不如直接读 AOSP + Studio 的 `WIFI:T:ADB` 格式。
 - miraclecast / 自建 Miracast 栈：Linux sink；Windows 应走系统 `MiracastReceiver` 或「投影到此电脑」，且只看不控，不进 `yohu-mirror`。
 - 把无线并进已有 scrcpy 投屏篇当「又一种编码」：运输问题，不是画质问题。
+
+**入选（Android 蓝牙连接 5 + 1 主题，2026-09-17）**
+
+- Nordic Android-BLE-Library：GATT 请求 + close 后再 connectGatt；TRANSPORT_LE。
+- blessed-android：Central/Peripheral；未断开不连。
+- kable：Connection 短寿；断开超时不驱动重连。
+- Gadgetbridge：Service 编排、dispose 再 create、耳机运输与 A2DP 分开。
+- SettingsLib：经典观察切法；发起 API 与 isConnected 作反例。
+- 主题笔记：三条「已连接」、GATT 对象寿命、HS01 要组合。
+
+**落选（Android 蓝牙连接）**
+
+- `dariuszseweryn/RxAndroidBle`：连接即资源，与 kable 同构，RxJava 对 HS01 无增量。
+- `NordicSemiconductor/Kotlin-BLE-Library` 2.0：作者自承未完成，与 Android-BLE-Library 重叠。
+- `weliem/blessed-android-coroutines`：与 Java blessed 同构。
+- `Jasonchenlijian/FastBle`：单例混扫描/连接/重试，正是要避免的旧架构。
+- `tjokinen/blease`：0.x，单机验证，队列模型已被 Nordic/Blessed 覆盖。
+- `threadpoolx/DissPair`：协议探针，不是产品编排。
+- `androidx.bluetooth`：官方实验面，单体仓过大，现役 API 盖不住经典+GATT。
+- 索尼 / Bose / Nothing 陪伴 App：闭源。
+- 把本主题并进已有 AOSP HCI snoop 篇：那是抓包，不是 App 连接对象。

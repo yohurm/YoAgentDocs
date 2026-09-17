@@ -14,13 +14,14 @@ source:
   repo: Genymobile/scrcpy
   url: https://github.com/Genymobile/scrcpy
   cloned_to: "%TEMP%/YoAgentResearch/Genymobile--scrcpy"
-studied_at: 2026-08-25
+studied_at: 2026-09-15
 related:
   - research.synthesis.client-runtime
   - research.yume-chan-ya-webadb
   - research.barry-ran-QtScrcpy
   - research.NetrisTV-ws-scrcpy
   - research.android-wireless-connect-paths
+  - research.desktop-mirror-aspect-scale
 ---
 
 # Genymobile/scrcpy
@@ -104,3 +105,25 @@ adb shell CLASSPATH=... app_process / com.genymobile.scrcpy.Server <version> key
 ### 无线 TCP/IP（2026-09-10）
 
 补读 `doc/connection.md`、`app/src/server.c`（`sc_server_switch_to_tcpip` / `connect_to_tcpip`）、`adb_parser.c`（`ip route` 只收 `wlan*`）、`adb_tunnel.c`（`adb connect` 上 reverse 失败则 forward）。这是 **不开「无线调试」** 也能无线投屏的官方客户端做法：USB 一次 `adb tcpip 5555`，不是 Android 11 配对。Yohu 缺的是这套向导，不是另一套编码器。详见 [无线连接主题](android--wireless-connect-paths.md)。
+
+### 窗口比例、编码对齐与缩小清晰度（2026-09-15）
+
+补读 `doc/window.md`、`doc/video.md` Size、`app/src/screen.c`（`set_aspect_ratio` / `compute_content_rect` / `set_content_size`）、`app/src/texture.c`（mipmaps / trilinear）、`server/.../model/Size.java`（`align` 向下取整到 alignment）、`SurfaceEncoder.java`（alignment 来自 encoder caps 与 `--min-size-alignment`）。浅克隆仍在 `%TEMP%/YoAgentResearch/Genymobile--scrcpy`。
+
+官方客户端把三件事拆开：
+
+1. **内容尺寸 = session / 帧尺寸，不是解码器纹理。** `SC_EVENT_OPEN_WINDOW` 把 `frame_size` 写成 `content_size`（再按 orientation 换轴）。窗口宽高比锁在 `content_size`（`SDL_SetWindowAspectRatio`）。用户拖窗口时默认锁比例；只有 `--no-window-aspect-ratio-lock` 或全屏才在窗口里 letterbox。letterbox 的背景是窗口清屏色（默认 `#222`），不是「设备边框」。
+2. **画图矩形跟 content_size 同一份。** `compute_content_rect`：窗口已与内容同比例则铺满；否则 contain。`--render-fit=unscaled` 才 1:1 居中；`stretched` 才拉满。没有「占用盒用 A 尺寸、blit 用 B 尺寸」。
+3. **编码对齐会改像素，但客户端仍跟协议里的宽高。** `Size.align` 把宽高向下收到 2/4/8/16 的倍数。session 包报的是这次编码的宽高。硬解输出纹理可以更大（宏块 / MF `STREAM_CHANGE`）。官方 SDL 纹理按 `sc_size` 建，不把解码器 padded 尺寸当成窗口比例。
+4. **缩小：官方用 mip 是图省事，不是最佳核。** `doc/video.md`：默认跟设备分辨率；`-m` 才在编码前缩小。OpenGL 才建 mip（`texture.c` `LOD_BIAS -1`）；Windows Direct3D 渲染器**不建 mip**。作者在 issue 1394 写明 mip 是 quick-and-dirty，更好的是手写 bicubic。Yohu 嵌入槽 >2:1，跟他们的「大窗」假设不同，不能抄 mip，也不能把 dest 收成整数 1/3。
+
+Yohu 工作台没有独立 OS 窗，**avail 是舞台格子，占用卡片必须自己锁到 session 宽高比**。黑边若出现在描边内侧，说明 clip / dest / 纹理用了三套尺寸。卡片外的舞台底是页面，不是「框错了」。
+
+| 点 | 方式 | 说明 |
+|----|------|------|
+| 窗口/卡片比例锁 session 内容尺寸 | reuse-pattern | 占用 clip、描边、dest、触控映射同一份 |
+| 硬解纹理大于 session 时裁源矩形 | adapt | SDL 建纹理用 content；D3D VP 用 `SetStreamSourceRect` |
+| 编码前 `-m` 降分辨率换清晰 | anti-pattern | USB 已 `max_size=0`；糊不是靠再砍长边 |
+| 占用盒一套尺寸、GPU 再按纹理 contain 一次 | anti-pattern | 双 contain + 对齐填充 = 框内黑边、比例漂 |
+
+详见 [占用比例与清晰度](desktop--mirror-aspect-scale.md)。

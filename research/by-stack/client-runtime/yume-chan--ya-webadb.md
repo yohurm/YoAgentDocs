@@ -14,12 +14,13 @@ source:
   repo: yume-chan/ya-webadb
   url: https://github.com/yume-chan/ya-webadb
   cloned_to: "%TEMP%/YoAgentResearch/yume-chan--ya-webadb"
-studied_at: 2026-08-25
+studied_at: 2026-09-15
 related:
   - research.synthesis.client-runtime
   - research.Genymobile-scrcpy
   - research.NetrisTV-ws-scrcpy
   - research.android-wireless-connect-paths
+  - research.desktop-mirror-aspect-scale
 ---
 
 # yume-chan/ya-webadb
@@ -89,3 +90,15 @@ Tango：浏览器里的 ADB + scrcpy。产品是 tangoapp.dev；库是一套 MIT
 ### 无线命令（2026-09-10）
 
 补读 `libraries/adb/src/server/commands/wireless.ts`、`m-dns.ts`、`service/tcpip.ts`。`WirelessCommands` 只向 **官方 adb server** 发 `host:pair` / `host:connect` / `host:disconnect`，并区分 already-connected / unauthorized / network。`AdbTcpIpService` 按 `listen_addrs` → `service.adb.tcp.port` → `persist.adb.tcp.port` 读遗产监听。作者明确：浏览器 WebUSB 路径 **不做** Android 11+ TLS 配对。Yohu 应对齐「封装 sidecar」，不要抄 `@yume-chan/adb` 的 daemon 实现。详见 [无线连接主题](android--wireless-connect-paths.md)。
+
+### 画布尺寸跟谁走（2026-09-15）
+
+补读 `libraries/scrcpy-decoder-webcodecs/src/video/render/canvas.ts`、`webgl.ts`。克隆仍在 `%TEMP%/YoAgentResearch/yume-chan--ya-webadb`。
+
+`CanvasVideoFrameRenderer` 默认 `canvasSize: "video"`：`canvas.width/height = frame.codedWidth/codedHeight`。`"display"` 才把 backing store 收到 CSS 显示盒（且文档要求 **调用方先把显示盒调成正确宽高比**）。`"external"` 完全交给外面。截图只在 `"video"` 时有：导出的是视频分辨率，不是 letterbox 后的显示盒。
+
+WebGL 绘制用 `codedWidth/codedHeight` 做 texel，viewport 是 `drawingBuffer`。CSS 再把这张画布 contain 进页面。他们**不在解码器里再 contain 一次**；比例是画布外的布局问题。
+
+教训：Yohu 的 HWND 铺满 avail，可见卡片是 DComp clip。clip / dest 必须跟 **session 内容尺寸**（协议宽高），不能跟硬解 `coded`/纹理 desc。WebCodecs 的 `displayWidth` / `visibleRect` 才接近「可见内容」；Yohu 不走 WebCodecs，对应物是 scrcpy session 包，不是 MF `STREAM_CHANGE` 后的偶数纹理。
+
+详见 [占用比例与清晰度](desktop--mirror-aspect-scale.md)。
