@@ -6,7 +6,7 @@ severity: must
 scope: common
 when: always
 when_to_use: 判断改动是否可交付时
-related: [checklist.before-finish, rule.common.acceptance, rules.by-type.hub]
+related: [checklist.before-finish, rule.common.acceptance, rule.common.architecture, rules.by-type.hub]
 ---
 
 # 测试与完成标准
@@ -18,7 +18,8 @@ related: [checklist.before-finish, rule.common.acceptance, rules.by-type.hub]
 - 行为变更要有对应验证。用类型包指定的方式：单测、安装真机、启动桌面应用、对照设计文档等。
 - 先完成该类型要求的检查，再声称完成。失败则先修，不把失败留给用户。
 - 完成标准以用户任务为准：做了但没满足任务，不算完成。本轮验收条目与类型包门禁必须**全部通过**；90% 仍是未完成。写法与结束语义见 [acceptance.md](acceptance.md)。
-- 发现范围外的缺陷：记录并询问，不擅自扩大修复面。
+- **本阶段范围内技术债务零残留。** 兼容层、双轨、TODO/FIXME、跳过测试、例外清单扩容、非阻塞挂账均算未完成。细则见 [architecture.md](architecture.md)「严禁残留技术债务」。
+- 发现范围外的缺陷：若在本阶段相关数据链路上，纳入本轮清零；否则记入下一阶段的明确范围（模块 + 链路 + 可判定验收）并询问，不擅自重写无关模块，也不把本阶段债务标成非阻塞。
 - 当前环境做不到类型包要求的验证时（例如 Android 未接设备），在回复里写明缺口，改用已具备的次级手段，不要假装已经实机看过。
 - 交付时分开写：已完成的修改、已做的检查、未执行的验证。事实与判断分开；未编译、未运行、未测不得写成「已验证通过」。
 

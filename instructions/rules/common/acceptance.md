@@ -6,7 +6,7 @@ severity: must
 scope: common
 when: always
 when_to_use: 写验收条目、判断本轮能否总结或结束对话时
-related: [rule.common.quality, task.implement, task.bug-fix]
+related: [rule.common.quality, rule.common.architecture, checklist.before-finish]
 ---
 
 # 验收标准与结束语义
@@ -36,7 +36,8 @@ related: [rule.common.quality, task.implement, task.bug-fix]
 | 尽快、本周、某日上线、在 deadline 前 | 日期不是行为是否正确 | 删掉；行为对错与日历无关 |
 | 基本完成、大致可用、完成度 90% | 中间态 | 拆成多条，每条过或不过 |
 | 尽量、适当、必要时 | 谁都可以说自己做到了 | 写触发条件与必须结果 |
-| 代码质量高、架构清晰 | 空话 | 落到本库已有规则（分层、无兼容层、无越级）的可检查项 |
+| 代码质量高、架构清晰 | 空话 | 落到本库已有规则（分层、无兼容层、无越级、无残留技术债务）的可检查项 |
+| 已知债务、非阻塞、后续再清、用户可先用 | 把未完成写成验收通过 | 拆进本阶段清单并做到过/不过；做不到则本轮未完成 |
 
 ## 必须：结束语义
 
@@ -55,3 +56,4 @@ related: [rule.common.quality, task.implement, task.bug-fix]
 - 「功能已完成，还差空态和禁用，用户可以先看。」→ 空态、禁用若在清单里，整轮未完成。
 - 「主流程过了，边界明天再补。」→ 验收里没有明天。
 - 「完成度大约九成，先总结。」→ 禁止。
+- 「架构已通，剩几处 TODO 和非阻塞债。」→ 本阶段范围内技术债务未清零，整轮未完成。
