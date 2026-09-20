@@ -15,4 +15,4 @@ related: [rule.common.quality, rule.common.acceptance]
 - [ ] 用户未要求则未 commit / push
 - [ ] 若写了知识库文档：路径正确、frontmatter 完整、索引（Hub）已更新
 - [ ] 若做了开源深研：源码仍只在 Temp，总结已按能力层归档
-- [ ] 若是架构/分层改动：已完成 [architecture-review.md](architecture-review.md)
+- [ ] 若是架构/分层改动：已完成 [architecture-review.md](architecture-review.md)；本阶段范围内无未修分层问题、无非阻塞挂账、无双轨半成品、**无残留技术债务**
