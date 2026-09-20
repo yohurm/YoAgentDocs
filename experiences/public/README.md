@@ -12,4 +12,4 @@ related: [experiences.hub]
 
 | 篇 | 一句话 |
 |----|--------|
-| [architecture-review-waves.md](architecture-review-waves.md) | 多范围架构审查：分波次、分所有权、同一波次全绿才收口 |
+| [architecture-review-waves.md](architecture-review-waves.md) | 多范围架构审查：分波次整理到干净、严禁残留技术债务、同一波次全绿才收口 |
